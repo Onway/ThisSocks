@@ -20,7 +20,7 @@
 	./ThisSocks -C conf/client.conf
 
 ## 浏览器设置
-firefox浏览器设置SOCKSv5代理
+firefox浏览器设置SOCKSv5代理  
 ![image](https://github.com/Onway/ThisSocks/raw/master/img/setting.png)
 
 ## 注意
