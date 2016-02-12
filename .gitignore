@@ -1,0 +1,5 @@
+*.o
+ThisSocks
+gtest/Test*
+*.user
+lconf/
