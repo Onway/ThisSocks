@@ -10,7 +10,7 @@ using namespace std;
 Config GConfig;
 
 Config::Config()
-	: RunAsClient(false), RunAsDaemon(false), ServerPort(0), LocalPort(0)
+    : ServerPort(0), LocalPort(0), RunAsClient(false), RunAsDaemon(false)
 {
 }
 

@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include <string>
 #include <cstdlib>
+#include <cassert>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/resource.h>
@@ -70,7 +71,7 @@ void daemonize()
 	if (rl.rlim_max == RLIM_INFINITY) {
 		rl.rlim_max = 1024;
 	}
-	for (int i = 0; i < rl.rlim_max; ++i) {
+    for (unsigned i = 0; i < rl.rlim_max; ++i) {
 		close(i);
 	}
 
@@ -78,4 +79,7 @@ void daemonize()
 	fd0 = open("/dev/null", O_RDWR);
 	fd1 = dup(fd0);
 	fd2 = dup(fd0);
+    assert(fd0 == 0);
+    assert(fd1 == 1);
+    assert(fd2 == 2);
 }

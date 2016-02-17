@@ -11,7 +11,8 @@ using namespace std;
 bool Utils::TrimStart(string &str)
 {
 	int s = 0;
-	for (; s < str.size(); ++s) {
+    int len = str.size();
+    for (; s < len; ++s) {
 		if (str[s] != ' ' && str[s] != '\t') {
 			break;
 		}
@@ -21,7 +22,7 @@ bool Utils::TrimStart(string &str)
 		return false;
 	}
 
-	if (s >= str.size()) {
+    if (s >= len) {
 		str = "";
 	} else {
 		str = str.substr(s);
@@ -38,7 +39,7 @@ bool Utils::TrimEnd(string &str)
 		}
 	}
 
-	if (e == str.size() - 1) {
+    if (e == (int)str.size() - 1) {
 		return false;
 	}
 
