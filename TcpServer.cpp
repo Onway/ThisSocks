@@ -1,4 +1,4 @@
-#include "SocksServer.h"
+#include "TcpServer.h"
 #include "Logger.h"
 #include "Config.h"
 #include <cstring>
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-bool SocksServer::Init(string srvAddr, int port)
+bool TcpServer::Init(string srvAddr, int port)
 {
 	if (!SetupSignalHandlers())
 	{
@@ -28,7 +28,7 @@ bool SocksServer::Init(string srvAddr, int port)
 	return true;
 }
 
-void SocksServer::Run(Proxy *proxy)
+void TcpServer::Run(Proxy *proxy)
 {
 	int connfd;
 	pid_t cid;
@@ -57,7 +57,7 @@ void SocksServer::Run(Proxy *proxy)
 	}
 }
 
-int SocksServer::CreateListenSocket(string srvAddr, int port)
+int TcpServer::CreateListenSocket(string srvAddr, int port)
 {
 	int listenfd;
 	struct sockaddr_in servaddr;
@@ -88,7 +88,7 @@ int SocksServer::CreateListenSocket(string srvAddr, int port)
 	return listenfd;
 }
 
-bool SocksServer::SetupSignalHandlers()
+bool TcpServer::SetupSignalHandlers()
 {
 	struct sigaction act;
 
@@ -105,7 +105,7 @@ bool SocksServer::SetupSignalHandlers()
 	return true;
 }
 
-void SocksServer::sig_chld(int signo)
+void TcpServer::sig_chld(int signo)
 {
 	if (signo == SIGCHLD) {
 		while (waitpid(-1, NULL, WNOHANG) > 0)

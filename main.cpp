@@ -1,4 +1,4 @@
-#include "SocksServer.h"
+#include "TcpServer.h"
 #include "Config.h"
 #include "Proxy.h"
 #include "Passwd.h"
@@ -35,19 +35,19 @@ int main(int argc, char *argv[])
 	if (GConfig.RunAsClient) {
 		listenAddr = GConfig.LocalAddress;
 		listenPort = GConfig.LocalPort;
-		proxy = new ClientProxy();
+        proxy = new SocksClientProxy();
 	} else {
 		listenAddr = GConfig.ServerAddress;
 		listenPort = GConfig.ServerPort;
-		proxy = new ServerProxy();
+        proxy = new SocksServerProxy();
 	}
 
-	SocksServer socks;
-	if (!socks.Init(listenAddr, listenPort)) {
+    TcpServer srv;
+    if (!srv.Init(listenAddr, listenPort)) {
 		return -1;
 	}
 
-	socks.Run(proxy);
+    srv.Run(proxy);
 	return -1; // error occured
 }
 

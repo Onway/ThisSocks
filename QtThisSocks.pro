@@ -8,7 +8,7 @@ SOURCES += main.cpp \
     Logger.cpp \
     Passwd.cpp \
     Proxy.cpp \
-    SocksServer.cpp \
+    TcpServer.cpp \
     Utils.cpp \
     Encrypt.cpp
 
@@ -24,7 +24,7 @@ HEADERS += \
     Logger.h \
     Passwd.h \
     Proxy.h \
-    SocksServer.h \
+    TcpServer.h \
     Utils.h \
     Encrypt.h
 

@@ -4,7 +4,7 @@
 #include <string>
 #include "Proxy.h"
 
-class SocksServer
+class TcpServer
 {
 public:
 	bool Init(std::string srvAddr, int srvPort);

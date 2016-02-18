@@ -119,12 +119,12 @@ int Proxy::ReadN(int fd, void *buf, size_t count)
 }
 
 
-ServerProxy::ServerProxy()
+SocksServerProxy::SocksServerProxy()
 {
 	pwd.LoadFile(GConfig.PwdFile);
 }
 
-void ServerProxy::Run(int srcfd)
+void SocksServerProxy::Run(int srcfd)
 {
     encrypter = GEncryptFactory.GetEncrypter();
     if (!encrypter->SetServerFd(srcfd)) {
@@ -147,7 +147,7 @@ void ServerProxy::Run(int srcfd)
     ForwardData(srcfd, tarfd);
 }
 
-bool ServerProxy::SelectMethod()
+bool SocksServerProxy::SelectMethod()
 {
     char buf[3];
     int readn;
@@ -170,7 +170,7 @@ bool ServerProxy::SelectMethod()
     return true;
 }
 
-int ServerProxy::ConnectServer()
+int SocksServerProxy::ConnectServer()
 {
     char buf[MAXBUF];
 	uint32_t ip; 
@@ -245,7 +245,7 @@ int ServerProxy::ConnectServer()
 	return remotefd;
 }
 
-bool ServerProxy::ValidateSource()
+bool SocksServerProxy::ValidateSource()
 {
     char buf[MAXBUF];
     int readn = encrypter->Read(buf, sizeof(buf));
@@ -284,7 +284,7 @@ bool ServerProxy::ValidateSource()
 }
 
 
-void ClientProxy::Run(int srcfd)
+void SocksClientProxy::Run(int srcfd)
 {
     if (!WaitingMethod(srcfd)) {
         return;
@@ -311,7 +311,7 @@ void ClientProxy::Run(int srcfd)
     ForwardData(srcfd, tarfd);
 }
 
-bool ClientProxy::WaitingMethod(int srcfd)
+bool SocksClientProxy::WaitingMethod(int srcfd)
 {
     char buf[3];
     if (3 != ReadN(srcfd, buf, sizeof(buf))) {
@@ -327,7 +327,7 @@ bool ClientProxy::WaitingMethod(int srcfd)
     return true;
 }
 
-bool ClientProxy::ResponseMethod(int srcfd)
+bool SocksClientProxy::ResponseMethod(int srcfd)
 {
     char buf[2] = { 5, 0 };
     if (2 != write(srcfd, buf, sizeof(buf))) {
@@ -337,7 +337,7 @@ bool ClientProxy::ResponseMethod(int srcfd)
     return true;
 }
 
-int ClientProxy::ConnectServer()
+int SocksClientProxy::ConnectServer()
 {
     int tarfd;
     struct sockaddr_in taraddr;
@@ -364,7 +364,7 @@ int ClientProxy::ConnectServer()
     return tarfd;
 }
 
-bool ClientProxy::RequestProxy()
+bool SocksClientProxy::RequestProxy()
 {
     char buf[256 + 256 + 3] = { 5, 1, 2 };
     if (3 != encrypter->Write(buf, 3)) {

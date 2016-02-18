@@ -20,10 +20,10 @@ private:
     int ForwardData(int srcfd, int tarfd, bool fromClient);
 };
 
-class ServerProxy : public Proxy
+class SocksServerProxy : public Proxy
 {
 public:
-	ServerProxy();
+    SocksServerProxy();
     void Run(int srcfd);
 
 private:
@@ -34,7 +34,7 @@ private:
 	Passwd pwd;
 };
 
-class ClientProxy : public Proxy
+class SocksClientProxy : public Proxy
 {
 public:
 	void Run(int connfd);
