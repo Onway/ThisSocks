@@ -35,11 +35,13 @@ int main(int argc, char *argv[])
 	if (GConfig.RunAsClient) {
 		listenAddr = GConfig.LocalAddress;
 		listenPort = GConfig.LocalPort;
-        proxy = new SocksClientProxy();
+        //proxy = new SocksClientProxy();
+        proxy = new HttpsClientProxy();
 	} else {
 		listenAddr = GConfig.ServerAddress;
 		listenPort = GConfig.ServerPort;
-        proxy = new SocksServerProxy();
+        //proxy = new SocksServerProxy();
+        proxy = new HttpsServerProxy();
 	}
 
     TcpServer srv;

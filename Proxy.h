@@ -1,8 +1,22 @@
 #ifndef PROXY_H
 #define PROXY_H
-#include <string>
 #include "Passwd.h"
+#include "Config.h"
+#include "Logger.h"
+#include "Utils.h"
 #include "Encrypt.h"
+#include <unistd.h>
+#include <math.h>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
 
 std::string GetSocketPair(int connfd);
 class Proxy
@@ -39,11 +53,27 @@ class SocksClientProxy : public Proxy
 public:
 	void Run(int connfd);
 
+protected:
+    int ConnectServer();
+
 private:
     bool WaitingMethod(int srcfd);
-    int ConnectServer();
     bool RequestProxy();
     bool ResponseMethod(int srcfd);
+};
+
+class HttpsClientProxy : public SocksClientProxy
+{
+public:
+    void Run(int srcfd);
+};
+
+class HttpsServerProxy : public Proxy
+{
+public:
+    void Run(int srcfd);
+private:
+    bool ParseIpPort(std::string domain, uint32_t &ip, uint16_t &port);
 };
 
 #endif
