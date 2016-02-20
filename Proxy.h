@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 #include <errno.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -73,7 +74,18 @@ class HttpsServerProxy : public Proxy
 public:
     void Run(int srcfd);
 private:
-    bool ParseIpPort(std::string domain, uint32_t &ip, uint16_t &port);
+    bool ParseIpPort(std::string &domain, uint32_t &ip, uint16_t &port);
 };
 
+class HttpClientProxy : public HttpsClientProxy
+{
+};
+
+class HttpServerProxy : public Proxy
+{
+public:
+    void Run(int srcfd);
+private:
+    bool ParseIpPort(std::string &domain, uint32_t &ip, uint16_t &port);
+};
 #endif

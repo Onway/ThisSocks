@@ -137,4 +137,9 @@ TEST(Split, Default) {
 	Utils::Split(str, '=', result);
 	ASSERT_EQ(1, result.size());
 	EXPECT_EQ("abc", result[0]);
+
+	str = "baidu.com";
+	Utils::Split(str, ':', result);
+	ASSERT_EQ(1, result.size());
+	EXPECT_EQ("baidu.com", result[0]);
 }
