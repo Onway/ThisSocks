@@ -27,13 +27,21 @@ class Proxy
 {
 public:
     void Run(int connfd);
+    virtual ~Proxy()
+    {
+        if (encrypter != NULL) {
+            delete encrypter;
+        }
+    }
 
 protected:
-    bool virtual isMatch(const char *request, int len) {}
-    void virtual Run(int srcfd, const char *request, int len) {}
+    bool virtual isMatch(const char *, int) { return false; }
+    void virtual Run(int, const char *, int) {}
 
     Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
+    bool ValidateProxyClient();
     int ConnectProxyServer();
+    bool LoginProxyServer();
 
     void ForwardData(int srcfd, int tarfd);
     int ReadN(int fd, void *buf, size_t count);
@@ -42,6 +50,7 @@ protected:
 
 private:
     int ForwardData(int srcfd, int tarfd, bool fromClient);
+    Passwd pwd;
 };
 
 #endif

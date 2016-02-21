@@ -2,7 +2,8 @@
 
 using namespace std;
 
-bool HttpProxy::isMatch(const char *request, int len)
+// defaul proxy
+bool HttpProxy::isMatch(const char *, int)
 {
     return true;
 }

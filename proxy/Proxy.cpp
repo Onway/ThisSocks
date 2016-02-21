@@ -1,4 +1,7 @@
 #include "Proxy.h"
+#include "SocksProxy.h"
+#include "HttpsProxy.h"
+#include "HttpProxy.h"
 
 using namespace std;
 
@@ -7,7 +10,7 @@ void Proxy::Run(int srcfd)
     char request[MAXBUF];
     int len;
     Proxy* proxy = NULL;
-    EncryptBase* encry = NULL;
+    encrypter = NULL;
     do {
         if (GConfig.RunAsClient) {
             if ((len = read(srcfd, request, sizeof(request))) < 0) {
@@ -25,17 +28,25 @@ void Proxy::Run(int srcfd)
                 break;
             }
 
-            encry = GEncryptFactory.GetEncrypter();
-            if (!encry->SetClientFd(serverfd)) {
-                break;
-            }
-        } else {
-            encry = GEncryptFactory.GetEncrypter();
-            if (!encry->SetServerFd(srcfd)) {
+            encrypter = GEncryptFactory.GetEncrypter();
+            if (!encrypter->SetClientFd(serverfd)) {
                 break;
             }
 
-            if ((len = encry->Read(request, sizeof(request))) < 0) {
+            if (!LoginProxyServer()) {
+                break;
+            }
+        } else {
+            encrypter = GEncryptFactory.GetEncrypter();
+            if (!encrypter->SetServerFd(srcfd)) {
+                break;
+            }
+
+            if (!ValidateProxyClient()) {
+                break;
+            }
+
+            if ((len = encrypter->Read(request, sizeof(request))) < 0) {
                 GLogger.LogErr(LOG_NOTICE, "read proxy request error");
                 break;
             }
@@ -46,26 +57,153 @@ void Proxy::Run(int srcfd)
             }
         }
 
-        proxy->encrypter = encry;
+        proxy->encrypter = encrypter;
         proxy->Run(srcfd, request, len);
     } while (false);
 
-    if (encry != NULL) {
-        delete encry;
+    if (encrypter != NULL) {
+        delete encrypter;
     }
     if (proxy != NULL) {
+        proxy->encrypter = NULL;
         delete proxy;
     }
 }
 
 Proxy* Proxy::SelectLocalProxy(bool isClient, const char *request, int len)
 {
-    return 0;
+    Proxy *proxy = NULL;
+    if (isClient) {
+        proxy = new SocksClientProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+
+        proxy = new HttpsClientProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+
+        proxy = new HttpClientProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+    } else {
+        proxy = new SocksServerProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+
+        proxy = new HttpsServerProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+
+        proxy = new HttpServerProxy();
+        if (proxy->isMatch(request, len)) {
+            return proxy;
+        }
+        delete proxy;
+    }
+    return NULL;
 }
 
 int Proxy::ConnectProxyServer()
 {
-    return 0;
+    int tarfd;
+    struct sockaddr_in taraddr;
+
+    if ((tarfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+        GLogger.LogErr(LOG_ERR, "create socket to proxy server error");
+        return -1;
+    }
+
+    memset(&taraddr, 0, sizeof(taraddr));
+    taraddr.sin_family = AF_INET;
+    taraddr.sin_port = htons(GConfig.ServerPort);
+    if (-1 == inet_pton(AF_INET,
+            GConfig.ServerAddress.c_str(), &taraddr.sin_addr)) {
+        GLogger.LogErr(LOG_ERR, "inet_pton error");
+        return -1;
+    }
+
+    if (-1 == connect(tarfd,
+            (struct sockaddr *)&taraddr, sizeof(taraddr))) {
+        GLogger.LogErr(LOG_ERR, "connect() to proxy server error");
+        return -1;
+    }
+    return tarfd;
+}
+
+bool Proxy::LoginProxyServer()
+{
+    char buf[MAXBUF];
+
+    buf[0] = GConfig.Username.size();
+    strncpy(buf + 1, GConfig.Username.c_str(), buf[0]);
+
+    int pos = 1 + buf[0];
+    buf[pos] = GConfig.Password.size();
+    strncpy(buf + pos + 1, GConfig.Password.c_str(), buf[pos]);
+
+    int len = 2 + buf[1] + buf[pos];
+    if (len != encrypter->Write(buf, len)) {
+        GLogger.LogErr(LOG_ERR, "write username/password error");
+        return false;
+    }
+
+    if (1 != encrypter->Read(buf, 1) || buf[0] != 0) {
+        GLogger.LogErr(LOG_ERR, "login proxy server failed");
+        return false;
+    }
+    return true;
+}
+
+bool Proxy::ValidateProxyClient()
+{
+    char buf[MAXBUF];
+    int readn = encrypter->Read(buf, sizeof(buf));
+    if (readn < 1 || buf[0] <= 0) {
+        GLogger.LogErr(LOG_NOTICE, "read username length error");
+        return false;
+    }
+
+    int userlen = buf[0];
+    if (readn < 1 + userlen) {
+        GLogger.LogErr(LOG_NOTICE, "read usrename error");
+        return false;
+    }
+    string username = string(buf + 1, userlen);
+
+    if (readn < 1 + userlen + 1 || buf[1 + userlen] <= 0) {
+        GLogger.LogErr(LOG_NOTICE, "read password length error");
+        return false;
+    }
+    int pwdlen = buf[1 + userlen];
+    if (readn < 1 + userlen + 1 + pwdlen) {
+        GLogger.LogErr(LOG_NOTICE, "read password error");
+        return false;
+    }
+    string passwd = string(buf + 1 + userlen + 1, pwdlen);
+
+    char res[2];
+    if (pwd.IsValidUser(username, passwd)) {
+        res[0] = 0;
+        if (1 != encrypter->Write(res, 1)) {
+            GLogger.LogErr(LOG_ERR, "write auth result error");
+            return false;
+        }
+        return true;
+    }
+
+    res[0] = 1;
+    encrypter->Write(res, 1);
+    return false;
 }
 
 void Proxy::ForwardData(int srcfd, int tarfd)

@@ -6,6 +6,7 @@
 class EncryptBase
 {
 public:
+    virtual ~EncryptBase() {}
     virtual bool SetServerFd(int fd) = 0;
     virtual bool SetClientFd(int fd) = 0;
     virtual ssize_t Read(void *buf, size_t len) = 0;

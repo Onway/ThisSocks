@@ -4,7 +4,10 @@ using namespace std;
 
 bool SocksProxy::isMatch(const char *request, int len)
 {
-    return true;
+    return len == 3
+            && request[0] == 5
+            && request[1] == 1
+            && request[2] == 0;
 }
 
 SocksServerProxy::SocksServerProxy()

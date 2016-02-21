@@ -4,7 +4,7 @@ using namespace std;
 
 bool HttpsProxy::isMatch(const char *request, int len)
 {
-    return true;
+    return len >= 8 && strncasecmp(request, "CONNECT ", 8) == 0;
 }
 
 void HttpsClientProxy::Run(int srcfd)

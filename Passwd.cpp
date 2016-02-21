@@ -1,8 +1,10 @@
 #include "Passwd.h"
-#include "Logger.h"
-#include "Utils.h"
 
 using namespace std;
+
+Passwd::Passwd() : hasLoadFile(false)
+{
+}
 
 void Passwd::LoadFile(string fPath)
 {
@@ -42,6 +44,10 @@ void Passwd::LoadFile(string fPath)
 
 bool Passwd::IsValidUser(string user, string pwd)
 {
+    if (!hasLoadFile) {
+        LoadFile(GConfig.PwdFile);
+        hasLoadFile = true;
+    }
 	map<string, string>::iterator iter = mp.find(user);
 	return iter != mp.end() && iter->second == pwd;
 }
