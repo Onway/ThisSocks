@@ -12,7 +12,6 @@ bool SocksProxy::isMatch(const char *request, int len)
 
 SocksServerProxy::SocksServerProxy()
 {
-    pwd.LoadFile(GConfig.PwdFile);
 }
 
 void SocksServerProxy::Run(int srcfd)

@@ -1,10 +1,10 @@
 #ifndef PROXY_H
 #define PROXY_H
-#include "Passwd.h"
-#include "Config.h"
-#include "Logger.h"
-#include "Utils.h"
-#include "Encrypt.h"
+#include "../Passwd.h"
+#include "../Config.h"
+#include "../Logger.h"
+#include "../Utils.h"
+#include "../Encrypt.h"
 #include <unistd.h>
 #include <math.h>
 #include <string>
@@ -26,17 +26,19 @@ std::string GetSocketPair(int connfd);
 class Proxy
 {
 public:
+    Proxy();
     void Run(int connfd);
     virtual ~Proxy()
     {
         if (encrypter != NULL) {
             delete encrypter;
+            encrypter = NULL;
         }
     }
 
 protected:
-    bool virtual isMatch(const char *, int) { return false; }
-    void virtual Run(int, const char *, int) {}
+    virtual bool isMatch(const char *, int) { return false; }
+    virtual void Run(int, const char *, int) {}
 
     Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
     bool ValidateProxyClient();
