@@ -42,6 +42,7 @@ protected:
     bool ValidateProxyClient();
     int ConnectProxyServer();
     bool LoginProxyServer();
+    int ConnectRealServer(uint32_t ip, uint16_t port);
 
     void ForwardData(int srcfd, int tarfd);
     int ReadN(int fd, void *buf, size_t count);

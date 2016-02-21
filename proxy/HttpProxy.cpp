@@ -10,62 +10,12 @@ bool HttpProxy::isMatch(const char *, int)
 
 void HttpClientProxy::Run(int srcfd, const char *request, int len)
 {
-}
-
-void HttpServerProxy::Run(int srcfd)
-{
-    encrypter = GEncryptFactory.GetEncrypter();
-    if (!encrypter->SetServerFd(srcfd)) {
-        return;
-    }
-
-    char buf[MAXBUF];
-    int len;
-    if ((len = encrypter->Read(buf, sizeof(buf))) < 0) {
-        GLogger.LogMsg(LOG_DEBUG, "read https request error");
-        return;
-    }
-    string request = string(buf, len);
-    uint32_t ip;
-    uint16_t port;
-    if (!ParseIpPort(request, ip, port)) {
-        return;
-    }
-    GLogger.LogMsg(LOG_DEBUG, "ip-port: %d, %d", ip, port);
-
-    struct sockaddr_in remoteaddr;
-    bzero(&remoteaddr, sizeof(remoteaddr));
-    remoteaddr.sin_family = AF_INET;
-    remoteaddr.sin_addr.s_addr = ip;
-    remoteaddr.sin_port = htons(port);
-
-    int remotefd = socket(AF_INET, SOCK_STREAM, 0);
-    if (remotefd == -1) {
-        GLogger.LogErr(LOG_ERR, "create socket to remote error");
-        return;
-    }
-
-    if (connect(remotefd,
-            (struct sockaddr *)&remoteaddr,
-            sizeof(remoteaddr)) < 0) {
-        GLogger.LogErr(LOG_ERR, "connect to remote error");
-        return;
-    }
-
-    string tmp;
-    tmp.resize(request.size());
-    transform(request.begin(), request.end(), tmp.begin(), ::tolower);
-    string::size_type idx = tmp.find("proxy-connection");
-    if (idx != string::npos) {
-        request.erase(idx, 6);
-    }
-    len = request.size();
-    if (len != write(remotefd, request.c_str(), len)) {
+    int tarfd = encrypter->GetFd();
+    if (len != encrypter->Write(request, len)) {
         GLogger.LogErr(LOG_ERR, "write request to server error");
         return;
     }
-
-    ForwardData(srcfd, remotefd);
+    ForwardData(srcfd, tarfd);
 }
 
 bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
@@ -109,4 +59,31 @@ bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
 
 void HttpServerProxy::Run(int srcfd, const char *request, int len)
 {
+    string reqstr = string(request, len);
+    uint32_t ip;
+    uint16_t port;
+    if (!ParseIpPort(reqstr, ip, port)) {
+        return;
+    }
+    GLogger.LogMsg(LOG_DEBUG, "ip-port: %d, %d", ip, port);
+
+    int remotefd = ConnectRealServer(ip, port);
+    if (remotefd < 0) {
+        return;
+    }
+
+    string tmp;
+    tmp.resize(reqstr.size());
+    transform(reqstr.begin(), reqstr.end(), tmp.begin(), ::tolower);
+    string::size_type idx = tmp.find("proxy-connection");
+    if (idx != string::npos) {
+        reqstr.erase(idx, 6);
+    }
+    len = reqstr.size();
+    if (len != write(remotefd, reqstr.c_str(), len)) {
+        GLogger.LogErr(LOG_ERR, "write request to real server error");
+        return;
+    }
+
+    ForwardData(srcfd, remotefd);
 }

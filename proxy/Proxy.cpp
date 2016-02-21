@@ -206,6 +206,30 @@ bool Proxy::ValidateProxyClient()
     return false;
 }
 
+int Proxy::ConnectRealServer(uint32_t ip, uint16_t port)
+{
+    struct sockaddr_in remoteaddr;
+    bzero(&remoteaddr, sizeof(remoteaddr));
+    remoteaddr.sin_family = AF_INET;
+    remoteaddr.sin_addr.s_addr = ip;
+    remoteaddr.sin_port = htons(port);
+
+    int remotefd = socket(AF_INET, SOCK_STREAM, 0);
+    if (remotefd == -1) {
+        GLogger.LogErr(LOG_ERR, "create socket to real server error");
+        return -1;
+    }
+
+    if (connect(remotefd,
+            (struct sockaddr *)&remoteaddr,
+            sizeof(remoteaddr)) < 0) {
+        GLogger.LogErr(LOG_ERR, "connect() to real server error");
+        return -1;
+    }
+
+    return remotefd;
+}
+
 void Proxy::ForwardData(int srcfd, int tarfd)
 {
     bool halfClose = false;

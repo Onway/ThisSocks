@@ -17,9 +17,6 @@ protected:
 
 class HttpServerProxy : public HttpProxy
 {
-public:
-    void Run(int srcfd);
-
 protected:
     void Run(int srcfd, const char *request, int len);
 
