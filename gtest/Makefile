@@ -38,7 +38,7 @@ Logger.o : ../Logger.cpp ../Logger.h
 	g++ -c ../Logger.cpp -g
 
 
-TestPasswd : PasswdTest.o Passwd.o Utils.o Logger.o gtest_main.a
+TestPasswd : PasswdTest.o Passwd.o Utils.o Logger.o Config.o gtest_main.a
 	g++ $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
 Passwd.o : ../Passwd.cpp ../Passwd.h

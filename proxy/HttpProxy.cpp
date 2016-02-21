@@ -2,22 +2,6 @@
 
 using namespace std;
 
-// defaul proxy
-bool HttpProxy::isMatch(const char *, int)
-{
-    return true;
-}
-
-void HttpClientProxy::Run(int srcfd, const char *request, int len)
-{
-    int tarfd = encrypter->GetFd();
-    if (len != encrypter->Write(request, len)) {
-        GLogger.LogErr(LOG_ERR, "write request to server error");
-        return;
-    }
-    ForwardData(srcfd, tarfd);
-}
-
 bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
 {
     string::size_type sIdx = request.find("http://");
@@ -26,7 +10,7 @@ bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
     } else if ((sIdx = request.find(' ')) != string::npos) {
         sIdx += 1;
     } else {
-        GLogger.LogMsg(LOG_DEBUG, "find http:// error");
+        GLogger.LogMsg(LOG_NOTICE, "find http:// error");
         return false;
     }
 
@@ -59,14 +43,12 @@ bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
 
 void HttpServerProxy::Run(int srcfd, const char *request, int len)
 {
-    GLogger.LogMsg(LOG_DEBUG, "HttpServerProxy Running...");
     string reqstr = string(request, len);
     uint32_t ip;
     uint16_t port;
     if (!ParseIpPort(reqstr, ip, port)) {
         return;
     }
-    GLogger.LogMsg(LOG_DEBUG, "ip-port: %d, %d", ip, port);
 
     int remotefd = ConnectRealServer(ip, port);
     if (remotefd < 0) {
@@ -87,4 +69,9 @@ void HttpServerProxy::Run(int srcfd, const char *request, int len)
     }
 
     ForwardData(srcfd, remotefd);
+}
+
+bool HttpServerProxy::isMatch(const char *, int)
+{
+    return true;
 }

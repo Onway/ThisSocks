@@ -40,13 +40,13 @@ void Passwd::LoadFile(string fPath)
 		mp[vec[0]] = vec[1];
 	}
 	ifs.close();
+    hasLoadFile = true;
 }
 
 bool Passwd::IsValidUser(string user, string pwd)
 {
     if (!hasLoadFile) {
         LoadFile(GConfig.PwdFile);
-        hasLoadFile = true;
     }
 	map<string, string>::iterator iter = mp.find(user);
 	return iter != mp.end() && iter->second == pwd;

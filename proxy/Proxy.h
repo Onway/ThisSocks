@@ -37,7 +37,6 @@ public:
     }
 
 protected:
-    virtual bool isMatch(const char *, int) { return false; }
     virtual void Run(int, const char *, int) {}
 
     Proxy* SelectLocalProxy(bool isClient, const char *request, int len);

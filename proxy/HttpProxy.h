@@ -3,20 +3,11 @@
 
 #include "Proxy.h"
 
-class HttpProxy : public Proxy
+class HttpServerProxy : public Proxy
 {
 public:
-    bool isMatch(const char *request, int len);
-};
+    static bool isMatch(const char *request, int len);
 
-class HttpClientProxy : public HttpProxy
-{
-protected:
-    void Run(int srcfd, const char *request, int len);
-};
-
-class HttpServerProxy : public HttpProxy
-{
 protected:
     void Run(int srcfd, const char *request, int len);
 

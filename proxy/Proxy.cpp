@@ -2,6 +2,7 @@
 #include "SocksProxy.h"
 #include "HttpsProxy.h"
 #include "HttpProxy.h"
+#include "ClientProxy.h"
 
 using namespace std;
 
@@ -78,43 +79,17 @@ Proxy* Proxy::SelectLocalProxy(bool isClient, const char *request, int len)
 {
     Proxy *proxy = NULL;
     if (isClient) {
-        proxy = new SocksClientProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
-        }
-        delete proxy;
-
-        proxy = new HttpsClientProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
-        }
-        delete proxy;
-
-        proxy = new HttpClientProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
-        }
-        delete proxy;
+        proxy = new ClientProxy();
+        return proxy;
     } else {
-        proxy = new SocksServerProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
+        if (SocksServerProxy::isMatch(request, len)) {
+            return new SocksServerProxy();
         }
-        delete proxy;
-
-        proxy = new HttpsServerProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
+        if (HttpsServerProxy::isMatch(request, len)) {
+            return new HttpsServerProxy();
         }
-        delete proxy;
-
-        proxy = new HttpServerProxy();
-        if (proxy->isMatch(request, len)) {
-            return proxy;
-        }
-        delete proxy;
+        return new HttpServerProxy();
     }
-    GLogger.LogMsg(LOG_ERR, "no proxy selected");
     return NULL;
 }
 

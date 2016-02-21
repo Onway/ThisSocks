@@ -2,14 +2,6 @@
 
 using namespace std;
 
-bool SocksProxy::isMatch(const char *request, int len)
-{
-    return len == 3
-            && request[0] == 5
-            && request[1] == 1
-            && request[2] == 0;
-}
-
 void SocksServerProxy::Run(int srcfd, const char *, int)
 {
     char buf[MAXBUF] = { 5, 0 };
@@ -77,12 +69,10 @@ void SocksServerProxy::Run(int srcfd, const char *, int)
     ForwardData(srcfd, remotefd);
 }
 
-void SocksClientProxy::Run(int srcfd, const char *request, int len)
+bool SocksServerProxy::isMatch(const char *request, int len)
 {
-    int tarfd = encrypter->GetFd();
-    if (len != encrypter->Write(request, len)) {
-        GLogger.LogErr(LOG_ERR, "write request to server error");
-        return;
-    }
-    ForwardData(srcfd, tarfd);
+    return len == 3
+            && request[0] == 5
+            && request[1] == 1
+            && request[2] == 0;
 }

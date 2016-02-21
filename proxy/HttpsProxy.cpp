@@ -2,21 +2,6 @@
 
 using namespace std;
 
-bool HttpsProxy::isMatch(const char *request, int len)
-{
-    return len >= 8 && strncasecmp(request, "CONNECT ", 8) == 0;
-}
-
-void HttpsClientProxy::Run(int srcfd, const char *request, int len)
-{
-    int tarfd = encrypter->GetFd();
-    if (len != encrypter->Write(request, len)) {
-        GLogger.LogErr(LOG_ERR, "write request to server error");
-        return;
-    }
-    ForwardData(srcfd, tarfd);
-}
-
 bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port)
 {
     vector<string> part;
@@ -34,7 +19,6 @@ bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port)
     ip = *((uint32_t *)*hptr->h_addr_list);
     port = atoi(part[1].c_str());
 
-    GLogger.LogMsg(LOG_DEBUG, "domain: %d:%d", ip, port);
     return true;
 }
 
@@ -77,4 +61,9 @@ void HttpsServerProxy::Run(int srcfd, const char *request, int len)
     }
 
     ForwardData(srcfd, remotefd);
+}
+
+bool HttpsServerProxy::isMatch(const char *request, int len)
+{
+    return len >= 8 && strncasecmp(request, "CONNECT ", 8) == 0;
 }

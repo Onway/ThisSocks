@@ -3,20 +3,11 @@
 
 #include "Proxy.h"
 
-class SocksProxy : public Proxy
+class SocksServerProxy : public Proxy
 {
-protected:
-    bool isMatch(const char *request, int len);
-};
+public:
+    static bool isMatch(const char *request, int);
 
-class SocksServerProxy : public SocksProxy
-{
-protected:
-    void Run(int srcfd, const char *request, int len);
-};
-
-class SocksClientProxy : public SocksProxy
-{
 protected:
     void Run(int srcfd, const char *request, int len);
 };

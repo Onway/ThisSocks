@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     proxy/SocksProxy.cpp \
     proxy/HttpsProxy.cpp \
     proxy/HttpProxy.cpp \
-    proxy/Proxy.cpp
+    proxy/Proxy.cpp \
+    proxy/ClientProxy.cpp
 
 OTHER_FILES += \
     client.conf \
@@ -32,5 +33,6 @@ HEADERS += \
     proxy/SocksProxy.h \
     proxy/HttpsProxy.h \
     proxy/HttpProxy.h \
-    proxy/Proxy.h
+    proxy/Proxy.h \
+    proxy/ClientProxy.h
 
