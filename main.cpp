@@ -1,6 +1,6 @@
 #include "TcpServer.h"
 #include "Config.h"
-#include "Proxy.h"
+#include "proxy/Proxy.h"
 #include "Passwd.h"
 #include "Logger.h"
 #include <string>
@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
 		listenPort = GConfig.LocalPort;
         //proxy = new SocksClientProxy();
         //proxy = new HttpsClientProxy();
-        proxy = new HttpClientProxy();
+        proxy = new Proxy();
 	} else {
 		listenAddr = GConfig.ServerAddress;
 		listenPort = GConfig.ServerPort;
         //proxy = new SocksServerProxy();
         //proxy = new HttpsServerProxy();
-        proxy = new HttpServerProxy();
+        proxy = new Proxy();
 	}
 
     TcpServer srv;

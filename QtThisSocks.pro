@@ -7,10 +7,13 @@ SOURCES += main.cpp \
     Config.cpp \
     Logger.cpp \
     Passwd.cpp \
-    Proxy.cpp \
     TcpServer.cpp \
     Utils.cpp \
-    Encrypt.cpp
+    Encrypt.cpp \
+    proxy/SocksProxy.cpp \
+    proxy/HttpsProxy.cpp \
+    proxy/HttpProxy.cpp \
+    proxy/Proxy.cpp
 
 OTHER_FILES += \
     client.conf \
@@ -23,8 +26,11 @@ HEADERS += \
     Config.h \
     Logger.h \
     Passwd.h \
-    Proxy.h \
     TcpServer.h \
     Utils.h \
-    Encrypt.h
+    Encrypt.h \
+    proxy/SocksProxy.h \
+    proxy/HttpsProxy.h \
+    proxy/HttpProxy.h \
+    proxy/Proxy.h
 
