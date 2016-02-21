@@ -26,13 +26,11 @@ void Proxy::Run(int srcfd)
             if (proxy == NULL) {
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after ServerLocalProxy");
 
             int serverfd = ConnectProxyServer();
             if (serverfd < 0) {
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after ConnectProxyServer");
 
             encrypter = GEncryptFactory.GetEncrypter();
             if (!encrypter->SetClientFd(serverfd)) {
@@ -42,7 +40,6 @@ void Proxy::Run(int srcfd)
             if (!LoginProxyServer()) {
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after LoginProxyServer");
         } else {
             encrypter = GEncryptFactory.GetEncrypter();
             if (!encrypter->SetServerFd(srcfd)) {
@@ -52,20 +49,16 @@ void Proxy::Run(int srcfd)
             if (!ValidateProxyClient()) {
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after ValidateProxyClient");
 
             if ((len = encrypter->Read(request, sizeof(request))) < 0) {
                 GLogger.LogErr(LOG_NOTICE, "read proxy request error");
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after read proxy request: %d", len);
 
             proxy = SelectLocalProxy(GConfig.RunAsClient, request, len);
-            GLogger.LogMsg(LOG_DEBUG, "after LocalProxy selected");
             if (proxy == NULL) {
                 break;
             }
-            GLogger.LogMsg(LOG_DEBUG, "after SelectLocalProxy");
         }
 
         proxy->encrypter = encrypter;
@@ -117,7 +110,6 @@ Proxy* Proxy::SelectLocalProxy(bool isClient, const char *request, int len)
 
         proxy = new HttpServerProxy();
         if (proxy->isMatch(request, len)) {
-            GLogger.LogMsg(LOG_DEBUG, "HttpServerProxy selected");
             return proxy;
         }
         delete proxy;
@@ -317,29 +309,4 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient)
 	}
 
     return 1;
-}
-
-int Proxy::ReadN(int fd, void *buf, size_t count)
-{
-    int readn;
-    size_t sum = 0;
-
-    while (sum < count) {
-        readn = read(fd, (char*)buf + sum, count - sum);
-        if (readn < 0) {
-            if (errno == EINTR) {
-                continue;
-            }
-            return readn;
-        } else if (readn == 0) { // EOF
-            break;
-        }
-        sum += readn;
-    }
-
-    if (sum < count) {
-        GLogger.LogMsg(LOG_NOTICE,
-            "ReadN return %d for request %d bytes", sum, count);
-    }
-    return sum;
 }

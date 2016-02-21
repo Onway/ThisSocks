@@ -10,7 +10,6 @@ bool HttpProxy::isMatch(const char *, int)
 
 void HttpClientProxy::Run(int srcfd, const char *request, int len)
 {
-    GLogger.LogMsg(LOG_DEBUG, "HttpClientProxy Running...");
     int tarfd = encrypter->GetFd();
     if (len != encrypter->Write(request, len)) {
         GLogger.LogErr(LOG_ERR, "write request to server error");
