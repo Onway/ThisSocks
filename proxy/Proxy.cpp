@@ -21,6 +21,10 @@ void Proxy::Run(int srcfd)
             if ((len = read(srcfd, request, sizeof(request))) < 0) {
                 GLogger.LogErr(LOG_NOTICE, "read proxy request error");
                 return;
+            } else if (len == 0) {
+                // occurs when using system proxy setting in ubuntu 14.04
+                GLogger.LogMsg(LOG_DEBUG, "proxy request connection closed");
+                return;
             }
 
             proxy = SelectLocalProxy(GConfig.RunAsClient, request, len);
@@ -77,10 +81,8 @@ void Proxy::Run(int srcfd)
 
 Proxy* Proxy::SelectLocalProxy(bool isClient, const char *request, int len)
 {
-    Proxy *proxy = NULL;
     if (isClient) {
-        proxy = new ClientProxy();
-        return proxy;
+        return new ClientProxy();
     } else {
         if (SocksServerProxy::isMatch(request, len)) {
             return new SocksServerProxy();
