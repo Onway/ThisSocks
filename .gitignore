@@ -3,3 +3,4 @@ ThisSocks
 gtest/Test*
 *.user
 lconf/
+*.swp

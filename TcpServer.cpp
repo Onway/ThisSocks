@@ -35,7 +35,7 @@ void TcpServer::Run(Proxy *proxy)
 
 	while (1) {
 		if ((connfd = accept(listenfd, NULL, 0)) == -1) {
-			if (errno == EINTR) {
+			if (errno == EINTR || errno == ECONNABORTED) {
 				continue;
 			}
 			GLogger.LogErr(LOG_ERR, "accept error");
@@ -48,7 +48,6 @@ void TcpServer::Run(Proxy *proxy)
 		} else if (cid == 0) {
 			close(listenfd);
 			proxy->Run(connfd);
-            //close(connfd);
             shutdown(connfd, SHUT_RDWR);
             exit(0);
 		}

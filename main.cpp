@@ -30,20 +30,13 @@ int main(int argc, char *argv[])
 
 	string listenAddr;
 	int listenPort;
-	Proxy *proxy = NULL;
 	
 	if (GConfig.RunAsClient) {
 		listenAddr = GConfig.LocalAddress;
 		listenPort = GConfig.LocalPort;
-        //proxy = new SocksClientProxy();
-        //proxy = new HttpsClientProxy();
-        proxy = new Proxy();
 	} else {
 		listenAddr = GConfig.ServerAddress;
 		listenPort = GConfig.ServerPort;
-        //proxy = new SocksServerProxy();
-        //proxy = new HttpsServerProxy();
-        proxy = new Proxy();
 	}
 
     TcpServer srv;
@@ -51,6 +44,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	Proxy *proxy = new Proxy();
     srv.Run(proxy);
 	return -1; // error occured
 }
