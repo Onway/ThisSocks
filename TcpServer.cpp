@@ -74,6 +74,12 @@ int TcpServer::CreateListenSocket(string srvAddr, int port)
 		return -1;
 	}
 
+	int flag = 1;
+	if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
+		GLogger.LogErr(LOG_ERR, "setsockopt error");
+		return -1;
+	}
+
 	if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
 		GLogger.LogErr(LOG_ERR, "bind error");
 		return -1;
