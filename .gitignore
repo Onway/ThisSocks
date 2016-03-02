@@ -4,4 +4,4 @@ gtest/Test*
 *.user
 lconf/
 *.swp
-build/*
+build/
