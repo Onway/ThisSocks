@@ -1,8 +1,5 @@
 PROJECT(ThisSocks)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-INCLUDE_DIRECTORIES(
-	proxy
-)
 SET(SRCS
 	main.cpp
 	Utils.cpp

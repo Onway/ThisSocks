@@ -2,7 +2,6 @@
 #define CONFIGENTRY_H
 
 #include <string>
-#include "Utils.h"
 
 class Config
 {

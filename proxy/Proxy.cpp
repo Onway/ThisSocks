@@ -3,11 +3,23 @@
 #include "HttpsProxy.h"
 #include "HttpProxy.h"
 #include "ClientProxy.h"
+#include "../Config.h"
+#include "../Logger.h"
+#include "../Utils.h"
+#include "../Encrypt.h"
 
 using namespace std;
 
 Proxy::Proxy() : encrypter(NULL)
 {
+}
+
+Proxy::~Proxy()
+{
+	if (encrypter != NULL) {
+		delete encrypter;
+		encrypter = NULL;
+	}
 }
 
 void Proxy::Run(int srcfd)

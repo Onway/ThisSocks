@@ -1,4 +1,6 @@
 #include "HttpProxy.h"
+#include "../Logger.h"
+#include "../Utils.h"
 
 using namespace std;
 

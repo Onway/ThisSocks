@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "Logger.h"
 #include <iostream>
 #include <cstring>
 #include <cstdio>

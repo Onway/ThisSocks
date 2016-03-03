@@ -1,4 +1,5 @@
 #include "SocksProxy.h"
+#include "../Logger.h"
 
 using namespace std;
 

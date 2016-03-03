@@ -1,9 +1,6 @@
 #ifndef PROXY_H
 #define PROXY_H
 #include "../Passwd.h"
-#include "../Config.h"
-#include "../Logger.h"
-#include "../Utils.h"
 #include "../Encrypt.h"
 #include <unistd.h>
 #include <math.h>
@@ -28,13 +25,7 @@ class Proxy
 public:
     Proxy();
     void Run(int connfd);
-    virtual ~Proxy()
-    {
-        if (encrypter != NULL) {
-            delete encrypter;
-            encrypter = NULL;
-        }
-    }
+    virtual ~Proxy();
 
 protected:
     virtual void Run(int, const char *, int) {}

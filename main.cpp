@@ -1,7 +1,6 @@
 #include "TcpServer.h"
 #include "Config.h"
 #include "proxy/Proxy.h"
-#include "Passwd.h"
 #include "Logger.h"
 #include <string>
 #include <cstdlib>

@@ -5,9 +5,6 @@
 #include <fstream>
 #include <string>
 #include <map>
-#include "Config.h"
-#include "Logger.h"
-#include "Utils.h"
 
 class Passwd
 {
