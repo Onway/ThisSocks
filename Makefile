@@ -1,30 +1,32 @@
-SOURCES += main.cpp \
-		   Config.cpp \
-		   Encrypt.cpp \
-		   Logger.cpp \
-		   TcpServer.cpp \
-		   Passwd.cpp \
-		   Utils.cpp \
-		   proxy/Proxy.cpp \
-		   proxy/SocksProxy.cpp \
-		   proxy/HttpsProxy.cpp \
-		   proxy/HttpProxy.cpp \
-		   proxy/ClientProxy.cpp
+SOURCES += src/main.cpp \
+		   src/Config.cpp \
+		   src/Encrypt.cpp \
+		   src/Logger.cpp \
+		   src/TcpServer.cpp \
+		   src/Passwd.cpp \
+		   src/Utils.cpp \
+		   src/Proxy.cpp \
+		   src/SocksProxy.cpp \
+		   src/HttpsProxy.cpp \
+		   src/HttpProxy.cpp \
+		   src/ClientProxy.cpp
 
-HEADERS += Config.h \
-		   Encrypt.h \
-		   Logger.h \
-		   TcpServer.h \
-		   Passwd.h \
-		   Utils.h \
-		   proxy/Proxy.h \
-		   proxy/SocksProxy.h \
-		   proxy/HttpsProxy.h \
-		   proxy/HttpProxy.h \
-		   proxy/ClientProxy.h
+HEADERS += inc/Config.h \
+		   inc/Encrypt.h \
+		   inc/Logger.h \
+		   inc/TcpServer.h \
+		   inc/Passwd.h \
+		   inc/Utils.h \
+		   inc/Proxy.h \
+		   inc/SocksProxy.h \
+		   inc/HttpsProxy.h \
+		   inc/HttpProxy.h \
+		   inc/ClientProxy.h
+
+FLAGS = -I inc/ -g
 
 ThisSocks : $(SOURCES) $(HEADERS)
-	g++ $(SOURCES) -o $@ -g
+	g++ $(FLAGS) $(SOURCES) -o $@
 
 clean :
 	rm -f ThisSocks *.o proxy/*.o

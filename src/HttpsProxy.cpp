@@ -1,6 +1,6 @@
 #include "HttpsProxy.h"
-#include "../Logger.h"
-#include "../Utils.h"
+#include "Logger.h"
+#include "Utils.h"
 #include <vector>
 
 using namespace std;

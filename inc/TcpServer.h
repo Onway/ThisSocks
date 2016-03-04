@@ -2,7 +2,7 @@
 #define SOCKSSERVER_H
 
 #include <string>
-#include "proxy/Proxy.h"
+#include "Proxy.h"
 
 class TcpServer
 {

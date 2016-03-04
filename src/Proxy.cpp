@@ -3,10 +3,10 @@
 #include "HttpsProxy.h"
 #include "HttpProxy.h"
 #include "ClientProxy.h"
-#include "../Config.h"
-#include "../Logger.h"
-#include "../Utils.h"
-#include "../Encrypt.h"
+#include "Config.h"
+#include "Logger.h"
+#include "Utils.h"
+#include "Encrypt.h"
 
 using namespace std;
 

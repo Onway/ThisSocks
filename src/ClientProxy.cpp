@@ -1,5 +1,5 @@
 #include "ClientProxy.h"
-#include "../Logger.h"
+#include "Logger.h"
 
 void ClientProxy::Run(int srcfd, const char *request, int len)
 {
