@@ -1,6 +1,6 @@
-#include "../Passwd.h"
-#include "../Logger.h"
-#include "../Config.h"
+#include "Passwd.h"
+#include "Logger.h"
+#include "Config.h"
 #include "gtest/gtest.h"
 #include <iostream>
 

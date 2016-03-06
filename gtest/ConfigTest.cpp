@@ -1,4 +1,4 @@
-#include "../Config.h"
+#include "Config.h"
 #include "gtest/gtest.h"
 
 int GetArgc(const char *argv[])

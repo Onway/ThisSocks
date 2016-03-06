@@ -17,12 +17,11 @@
 	make
 
 ## 运行
-	# 在build目录运行
     # 服务端侦听127.0.0.1:8389
-	./ThisSocks -C ../conf/server.conf
+	./ThisSocks -C conf/server.conf
 
 	# 客户端侦听127.0.0.1:1081
-	./ThisSocks -C ../conf/client.conf
+	./ThisSocks -C conf/client.conf
 
 ## 注意
 * 服务端采用的是perfork + select

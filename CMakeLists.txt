@@ -1,11 +1,13 @@
-PROJECT(ThisSocks)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-INCLUDE_DIRECTORIES(
-	inc
+option(build_unit_test "build unit test" OFF)
+
+project(ThisSocks)
+cmake_minimum_required(VERSION 2.8)
+include_directories(
+	${PROJECT_SOURCE_DIR}/inc
+	${PROJECT_SOURCE_DIR}/gtest/include
 )
 
-SET(SRCS
-	src/main.cpp
+set(SRCS
 	src/Utils.cpp
 	src/Logger.cpp
 	src/Encrypt.cpp
@@ -18,4 +20,27 @@ SET(SRCS
 	src/HttpProxy.cpp
 	src/ClientProxy.cpp
 )
-ADD_EXECUTABLE(ThisSocks ${SRCS})
+add_executable(ThisSocks ${SRCS} src/main.cpp)
+execute_process(
+	COMMAND cp -r ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
+)
+
+if (build_unit_test)
+	link_directories(
+		${PROJECT_SOURCE_DIR}/gtest
+	)
+	set(LIBS
+		gtest_main
+		gtest
+		pthread
+	)
+
+	add_executable(TestConfig ${SRCS} gtest/ConfigTest.cpp)
+	target_link_libraries(TestConfig ${LIBS})
+
+	add_executable(TestPasswd ${SRCS} gtest/PasswdTest.cpp)
+	target_link_libraries(TestPasswd ${LIBS})
+
+	add_executable(TestUtils ${SRCS} gtest/UtilsTest.cpp)
+	target_link_libraries(TestUtils ${LIBS})
+endif()
