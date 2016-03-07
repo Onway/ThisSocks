@@ -34,6 +34,9 @@ if (build_unit_test)
 		gtest
 		pthread
 	)
+	execute_process(
+		COMMAND cp -r ${PROJECT_SOURCE_DIR}/gtest/test_conf ${PROJECT_BINARY_DIR}
+	)
 
 	add_executable(TestConfig ${SRCS} gtest/ConfigTest.cpp)
 	target_link_libraries(TestConfig ${LIBS})
