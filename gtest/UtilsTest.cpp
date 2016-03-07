@@ -8,7 +8,7 @@ TEST(TrimStart, Default) {
 	string str;
 
 	str = "";
-	ASSERT_FALSE(Utils::Utils::TrimStart(str));
+	ASSERT_FALSE(Utils::TrimStart(str));
 	ASSERT_EQ("", str);
 
 	str = " ";
