@@ -22,7 +22,8 @@ set(SRCS
 )
 add_executable(ThisSocks ${SRCS} src/main.cpp)
 execute_process(
-	COMMAND cp -r ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
+	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
+	COMMAND cp -u ${PROJECT_SOURCE_DIR}/gtest/curl.bash ${PROJECT_BINARY_DIR}
 )
 
 if (build_unit_test)
@@ -35,7 +36,7 @@ if (build_unit_test)
 		pthread
 	)
 	execute_process(
-		COMMAND cp -r ${PROJECT_SOURCE_DIR}/gtest/test_conf ${PROJECT_BINARY_DIR}
+		COMMAND cp -ur ${PROJECT_SOURCE_DIR}/gtest/test_conf ${PROJECT_BINARY_DIR}
 	)
 
 	add_executable(TestConfig ${SRCS} gtest/ConfigTest.cpp)

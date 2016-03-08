@@ -72,8 +72,17 @@ void SocksServerProxy::Run(int srcfd, const char *, int)
 
 bool SocksServerProxy::isMatch(const char *request, int len)
 {
-    return len == 3
-            && request[0] == 5
-            && request[1] == 1
-            && request[2] == 0;
+	if (len < 2 || request[0] != 3) {
+		return false;
+	}
+
+	bool found = false;
+	int cnt = request[1];
+	for (int i = 0; i < cnt && i + 2 < len; ++i) {
+		if (request[i + 2] == 0) {
+			found = true;
+			break;
+		}
+	}
+	return found;
 }
