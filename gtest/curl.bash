@@ -55,7 +55,7 @@ function socks_test()
 {
 	for url in ${http[@]}
 	do
-		run_curl "" "sock5://" $url
+		run_curl "" "socks5://" $url
 	done
 
 	for url in ${https[@]}
@@ -67,3 +67,4 @@ function socks_test()
 get_test
 connect_test
 socks_test
+echo "done!"
