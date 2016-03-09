@@ -1,5 +1,5 @@
 # ThisSocks
-基于linux的简单的socks5代理C/S程序
+基于linux的代理C/S程序
 
 ## 当前功能
 * TCP代理
@@ -22,6 +22,9 @@
 
 	# 客户端侦听127.0.0.1:1081
 	./ThisSocks -C conf/client.conf
+
+	# 运行使用了curl的测试脚本
+	./curl.bash
 
 ## 注意
 * 服务端采用的是perfork + select

@@ -116,7 +116,7 @@ bool Config::ParseOption(const string &key, const string &value)
 
 void Config::PrintUsage()
 {
-	cout << "ThisSocks v0.1" << endl;
+	cout << "ThisSocks v1.0" << endl;
 	cout << endl;
 	cout << "Usage: ThisSocks <-C FILE | -h>" << endl;
 	cout << "    -C FILE        path to config file" << endl;
