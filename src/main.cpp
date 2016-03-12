@@ -29,13 +29,13 @@ int main(int argc, char *argv[])
 
 	string listenAddr;
 	int listenPort;
-	
 	if (GConfig.RunAsClient) {
 		listenAddr = GConfig.LocalAddress;
 		listenPort = GConfig.LocalPort;
 	} else {
 		listenAddr = GConfig.ServerAddress;
 		listenPort = GConfig.ServerPort;
+		GPasswd.LoadFile(GConfig.PwdFile);
 	}
 
     TcpServer srv;

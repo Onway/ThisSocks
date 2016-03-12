@@ -39,7 +39,6 @@ protected:
 
 private:
     int ForwardData(int srcfd, int tarfd, bool fromClient);
-    Passwd pwd;
 };
 
 #endif

@@ -186,7 +186,7 @@ bool Proxy::ValidateProxyClient()
     string passwd = string(buf + 1 + userlen + 1, pwdlen);
 
     char res[2];
-    if (pwd.IsValidUser(username, passwd)) {
+    if (GPasswd.IsValidUser(username, passwd)) {
         res[0] = 0;
         if (1 != encrypter->Write(res, 1)) {
             GLogger.LogErr(LOG_ERR, "write auth result error");
