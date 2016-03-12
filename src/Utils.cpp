@@ -1,6 +1,6 @@
 #include "Utils.h"
-#include "Logger.h"
 #include <iostream>
+#include <errno.h>
 #include <cstring>
 #include <cstdio>
 #include <syslog.h>
@@ -78,6 +78,7 @@ void Utils::Split(const string &str, char c, vector<string> &vec)
 
 string Utils::GetSocketPair(int connfd)
 {
+	char buf[1024];
     struct sockaddr_in localAddr;
     struct sockaddr_in remoteAddr;
     socklen_t len;
@@ -85,19 +86,20 @@ string Utils::GetSocketPair(int connfd)
     memset(&localAddr, 0, sizeof(localAddr));
     memset(&remoteAddr, 0, sizeof(remoteAddr));
     if (getsockname(connfd, (struct sockaddr *)&localAddr, &len) == -1) {
-        GLogger.LogErr(LOG_ERR, "getsockname error");
+		strerror_r(errno, buf, sizeof(buf));
+		return string("getsockname error: ") + buf;
     }
     if (getpeername(connfd, (struct sockaddr *)&remoteAddr, &len) == -1) {
-        GLogger.LogErr(LOG_ERR, "getpeername error");
+		strerror_r(errno, buf, sizeof(buf));
+		return string("getpeername error: ") + buf;
     }
 
     char localIp[20];
     char remoteIp[20];
-    inet_ntop(AF_INET, &localAddr.sin_addr, localIp, 20);
-    inet_ntop(AF_INET, &remoteAddr.sin_addr, remoteIp, 20);
+    inet_ntop(AF_INET, &localAddr.sin_addr, localIp, sizeof(localIp));
+    inet_ntop(AF_INET, &remoteAddr.sin_addr, remoteIp, sizeof(remoteIp));
 
-    char buf[100];
-    snprintf(buf, 100, "%s:%u-%s:%u",
+    snprintf(buf, sizeof(buf), "%s:%u-%s:%u",
         localIp, ntohs(localAddr.sin_port),
         remoteIp, ntohs(remoteAddr.sin_port));
     return string(buf);

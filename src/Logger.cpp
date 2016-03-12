@@ -51,11 +51,13 @@ void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
 	AppendLevel(logline, priority);
 	logline += logbuf;
 
+	char errbuf[LOGMAX];
 	if (logerr) {
+		strerror_r(errno, errbuf, sizeof(errbuf));
 		if (ident == 0) {
-			printf("%s: %s\n", logline.c_str(), strerror(errno));
+			printf("%s: %s\n", logline.c_str(), errbuf);
 		} else {
-			syslog(priority,"%s: %s", logline.c_str(), strerror(errno));
+			syslog(priority,"%s: %s", logline.c_str(), errbuf);
 		}
 	} else {
 		if (ident == 0) {
@@ -70,10 +72,12 @@ void Logger::AppendPreix(string &logline)
 {
 	time_t t = time(0);
 	char buf[50];
-	strftime(buf, 50, "%b %d %T ", localtime(&t));
+	struct tm tm;
+	localtime_r(&t, &tm);
+	strftime(buf, sizeof(buf), "%b %d %T ", &tm);
 	logline += buf;
 
-	snprintf(buf, 50, "[%d]: ", getpid());
+	snprintf(buf, sizeof(buf), "[%d]: ", getpid());
 	logline += buf;
 }
 

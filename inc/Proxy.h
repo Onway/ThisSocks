@@ -18,8 +18,6 @@
 
 #define MAXBUF 8192
 
-std::string GetSocketPair(int connfd);
-
 class Proxy
 {
 public:
