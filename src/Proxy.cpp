@@ -79,6 +79,7 @@ void Proxy::Run(int srcfd)
         }
 
         proxy->encrypter = encrypter;
+		encrypter = NULL;
         proxy->Run(srcfd, request, len);
     } while (false);
 
@@ -86,7 +87,6 @@ void Proxy::Run(int srcfd)
         delete encrypter;
     }
     if (proxy != NULL) {
-        proxy->encrypter = NULL;
         delete proxy;
     }
 }

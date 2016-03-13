@@ -16,10 +16,12 @@ using namespace std;
 
 bool TcpServer::Init(string srvAddr, int port)
 {
+	/*
 	if (!SetupSignalHandlers())
 	{
 		return false;
 	}
+	*/
 	
 	if ((listenfd = CreateListenSocket(srvAddr, port)) < 0) {
 		return false;
@@ -53,6 +55,25 @@ void TcpServer::Run(Proxy *proxy)
 		}
 		
 		close(connfd);
+	}
+}
+
+void TcpServer::Run()
+{
+	int connfd;
+
+	while (1) {
+		if ((connfd = accept(listenfd, NULL, 0)) == -1) {
+			if (errno == EINTR || errno == ECONNABORTED) {
+				continue;
+			}
+			GLogger.LogErr(LOG_ERR, "accept error");
+			break;
+		}
+
+		if (!StartProcessThread(connfd)) {
+			break;
+		}
 	}
 }
 
@@ -116,4 +137,39 @@ void TcpServer::sig_chld(int signo)
 		while (waitpid(-1, NULL, WNOHANG) > 0)
 			;
 	}
+}
+
+bool TcpServer::StartProcessThread(int connfd)
+{
+	pthread_attr_t pattr;
+	if (pthread_attr_init(&pattr) != 0) {
+		GLogger.LogMsg(LOG_ERR, "pthread_attr_init error");
+		return false;
+	}
+	if (pthread_attr_setdetachstate(&pattr, PTHREAD_CREATE_DETACHED) != 0) {
+		GLogger.LogMsg(LOG_ERR, "pthread_attr_setdetachstate error");
+		return false;
+	}
+
+	pthread_t tid;
+	if (pthread_create(&tid, &pattr, ProcessRequestThread,
+				(void *)(long)connfd) != 0) {
+		GLogger.LogMsg(LOG_ERR, "pthread_create error");
+		return false;
+	}
+	
+	if (pthread_attr_destroy(&pattr) != 0) {
+		GLogger.LogMsg(LOG_ERR, "pthread_attr_destroy error");
+		return false;
+	}
+	return true;
+}
+
+void * TcpServer::ProcessRequestThread(void *arg)
+{
+	int connfd = (int)(long)arg;
+	Proxy proxy;
+	proxy.Run(connfd);
+	shutdown(connfd, SHUT_RDWR);
+	return (void *)0;
 }

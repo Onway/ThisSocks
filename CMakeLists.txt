@@ -21,6 +21,7 @@ set(SRCS
 	src/ClientProxy.cpp
 )
 add_executable(ThisSocks ${SRCS} src/main.cpp)
+target_link_libraries(ThisSocks pthread)
 execute_process(
 	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
 	COMMAND cp -u ${PROJECT_SOURCE_DIR}/gtest/curl.bash ${PROJECT_BINARY_DIR}

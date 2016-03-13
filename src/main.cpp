@@ -42,9 +42,10 @@ int main(int argc, char *argv[])
     if (!srv.Init(listenAddr, listenPort)) {
 		return -1;
 	}
+	srv.Run();
 
-	Proxy *proxy = new Proxy();
-    srv.Run(proxy);
+	// Proxy *proxy = new Proxy();
+    // srv.Run(proxy);
 	return -1; // error occured
 }
 
