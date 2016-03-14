@@ -1,3 +1,4 @@
+#include "Feature.h"
 #include "Logger.h"
 #include <ctime>
 #include <cstdarg>

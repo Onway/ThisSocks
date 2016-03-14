@@ -1,3 +1,4 @@
+#include "Feature.h"
 #include "Utils.h"
 #include <iostream>
 #include <errno.h>
