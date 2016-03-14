@@ -9,7 +9,7 @@ public:
     static bool isMatch(const char *request, int);
 
 protected:
-    void Run(int srcfd, const char *request, int len);
+    void Run(int srcfd, const char *request, int len, int &srvfd);
 };
 
 #endif // SOCKSPROXY_H

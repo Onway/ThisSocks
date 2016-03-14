@@ -16,46 +16,11 @@ using namespace std;
 
 bool TcpServer::Init(string srvAddr, int port)
 {
-	/*
-	if (!SetupSignalHandlers())
-	{
-		return false;
-	}
-	*/
-	
 	if ((listenfd = CreateListenSocket(srvAddr, port)) < 0) {
 		return false;
 	}
 
 	return true;
-}
-
-void TcpServer::Run(Proxy *proxy)
-{
-	int connfd;
-	pid_t cid;
-
-	while (1) {
-		if ((connfd = accept(listenfd, NULL, 0)) == -1) {
-			if (errno == EINTR || errno == ECONNABORTED) {
-				continue;
-			}
-			GLogger.LogErr(LOG_ERR, "accept error");
-			break;
-		}
-
-		if ((cid = fork()) < 0) {
-			GLogger.LogErr(LOG_ERR, "fork error");
-			break;
-		} else if (cid == 0) {
-			close(listenfd);
-			proxy->Run(connfd);
-            shutdown(connfd, SHUT_RDWR);
-            exit(0);
-		}
-		
-		close(connfd);
-	}
 }
 
 void TcpServer::Run()
@@ -168,8 +133,14 @@ bool TcpServer::StartProcessThread(int connfd)
 void * TcpServer::ProcessRequestThread(void *arg)
 {
 	int connfd = (int)(long)arg;
+	int srvfd = -1;
 	Proxy proxy;
-	proxy.Run(connfd);
-	shutdown(connfd, SHUT_RDWR);
+
+	proxy.Run(connfd, srvfd);
+	shutdown(SHUT_RDWR, connfd);
+	if (srvfd != -1) {
+		shutdown(SHUT_RDWR, srvfd);
+	}
+
 	return (void *)0;
 }

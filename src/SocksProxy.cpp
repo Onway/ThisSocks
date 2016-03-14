@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void SocksServerProxy::Run(int srcfd, const char *, int)
+void SocksServerProxy::Run(int srcfd, const char *, int, int &srvfd)
 {
     char buf[MAXBUF] = { 5, 0 };
     if (2 != encrypter->Write(buf, 2)) {
@@ -57,6 +57,7 @@ void SocksServerProxy::Run(int srcfd, const char *, int)
     if (remotefd < 0) {
         return;
     }
+	srvfd = remotefd;
 
     char res[10];
     memset(res, 0, 10);

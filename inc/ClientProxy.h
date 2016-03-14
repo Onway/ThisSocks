@@ -6,7 +6,7 @@
 class ClientProxy : public Proxy
 {
 protected:
-    void Run(int srcfd, const char *request, int len);
+    void Run(int srcfd, const char *request, int len, int &srvfd);
 };
 
 #endif // CLIENTPROXY_H

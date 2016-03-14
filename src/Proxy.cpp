@@ -22,7 +22,7 @@ Proxy::~Proxy()
 	}
 }
 
-void Proxy::Run(int srcfd)
+void Proxy::Run(int srcfd, int &srvfd)
 {
     char request[MAXBUF];
     int len;
@@ -48,6 +48,7 @@ void Proxy::Run(int srcfd)
             if (serverfd < 0) {
                 break;
             }
+			srvfd = serverfd;
 
             encrypter = GEncryptFactory.GetEncrypter();
             if (!encrypter->SetClientFd(serverfd)) {
@@ -80,7 +81,7 @@ void Proxy::Run(int srcfd)
 
         proxy->encrypter = encrypter;
 		encrypter = NULL;
-        proxy->Run(srcfd, request, len);
+        proxy->Run(srcfd, request, len, srvfd);
     } while (false);
 
     if (encrypter != NULL) {

@@ -43,7 +43,7 @@ bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
     return true;
 }
 
-void HttpServerProxy::Run(int srcfd, const char *request, int len)
+void HttpServerProxy::Run(int srcfd, const char *request, int len, int &srvfd)
 {
     string reqstr = string(request, len);
     uint32_t ip;
@@ -56,6 +56,7 @@ void HttpServerProxy::Run(int srcfd, const char *request, int len)
     if (remotefd < 0) {
         return;
     }
+	srvfd = remotefd;
 
     string tmp;
     tmp.resize(reqstr.size());

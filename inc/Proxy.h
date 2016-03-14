@@ -22,11 +22,11 @@ class Proxy
 {
 public:
     Proxy();
-    void Run(int connfd);
+    void Run(int connfd, int &srvfd);
     virtual ~Proxy();
 
 protected:
-    virtual void Run(int, const char *, int) {}
+    virtual void Run(int, const char *, int, int&) {}
 
     Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
     bool ValidateProxyClient();

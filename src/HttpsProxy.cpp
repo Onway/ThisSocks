@@ -25,7 +25,7 @@ bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port)
     return true;
 }
 
-void HttpsServerProxy::Run(int srcfd, const char *request, int len)
+void HttpsServerProxy::Run(int srcfd, const char *request, int len, int &srvfd)
 {
     int i = 0;
     for (i = 8; i < len; ++i) {
@@ -55,6 +55,7 @@ void HttpsServerProxy::Run(int srcfd, const char *request, int len)
     if (remotefd < 0) {
         return;
     }
+	srvfd = remotefd;
 
     resstr += " 200 Connection Established\r\n\r\n";
     int reslen = resstr.size();
