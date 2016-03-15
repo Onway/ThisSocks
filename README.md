@@ -25,6 +25,3 @@
 
 	# 运行使用了curl的测试脚本
 	./curl.bash
-
-## 注意
-* 服务端采用的是perfork + select
