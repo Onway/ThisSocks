@@ -250,6 +250,7 @@ void Proxy::ForwardData(int srcfd, int tarfd)
                 break;
             } else if (ret == 0) {
                 halfClose = true;
+				shutdown(tarfd, SHUT_WR);
             }
 		}
 
@@ -260,6 +261,7 @@ void Proxy::ForwardData(int srcfd, int tarfd)
                 break;
             } else if (ret == 0) {
                 halfClose = true;
+				shutdown(srcfd, SHUT_WR);
             }
 		}
 	}

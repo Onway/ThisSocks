@@ -137,9 +137,9 @@ void * TcpServer::ProcessRequestThread(void *arg)
 	Proxy proxy;
 
 	proxy.Run(connfd, srvfd);
-	shutdown(SHUT_RDWR, connfd);
+	close(connfd);
 	if (srvfd != -1) {
-		shutdown(SHUT_RDWR, srvfd);
+		close(srvfd);
 	}
 
 	return (void *)0;
