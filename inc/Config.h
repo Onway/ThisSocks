@@ -26,6 +26,8 @@ private:
 	void PrintUsage();
 	int ParseArguments(int argc, char *argv[]);
 	bool ParseOption(const std::string &key, const std::string &value);
+
+	bool _D;
 };
 
 extern Config GConfig;

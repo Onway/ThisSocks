@@ -57,13 +57,13 @@ void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
 		strerror_r(errno, errbuf, sizeof(errbuf));
 		if (ident == 0) {
 			printf("%s: %s\n", logline.c_str(), errbuf);
-		} else {
+		} else if (priority != LOG_DEBUG) {
 			syslog(priority,"%s: %s", logline.c_str(), errbuf);
 		}
 	} else {
 		if (ident == 0) {
 			printf("%s\n", logline.c_str());
-		} else {
+		} else if (priority != LOG_DEBUG) {
 			syslog(priority, "%s", logline.c_str());
 		}
 	}

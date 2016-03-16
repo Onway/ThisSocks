@@ -11,7 +11,8 @@ using namespace std;
 Config GConfig;
 
 Config::Config()
-    : ServerPort(0), LocalPort(0), RunAsClient(false), RunAsDaemon(false)
+    : ServerPort(0), LocalPort(0), RunAsClient(false), RunAsDaemon(false),
+	_D(false)
 {
 }
 
@@ -23,6 +24,11 @@ int Config::Init(int argc, char *argv[])
 			ret = -1;
 		}
 	}
+
+	if (_D) {
+		RunAsDaemon = false;
+	}
+
 	return ret;
 }
 
@@ -35,6 +41,8 @@ int Config::ParseArguments(int argc, char *argv[])
 		} else if (strcmp(argv[idx], "-h") == 0) {
 			PrintUsage();
 			return 0;
+		} else if (strcmp(argv[idx], "-D") == 0) {
+			_D = true;	
 		} else {
 			PrintUsage();
 			return -1;
@@ -118,8 +126,10 @@ void Config::PrintUsage()
 {
 	cout << "ThisSocks v2.0" << endl;
 	cout << endl;
-	cout << "Usage: ThisSocks <-C FILE | -h>" << endl;
+	cout << "Usage: ThisSocks [-D] <-C FILE>" << endl;
+	cout << "       ThisSocks -h" << endl;
 	cout << "    -C FILE        path to config file" << endl;
+	cout << "    -D             debug mode" << endl;
 	cout << "    -h             show this usage and exit" << endl;
 	cout << endl;
 }
