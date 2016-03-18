@@ -4,7 +4,9 @@
 #include <errno.h>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
 #include <syslog.h>
+#include <limits.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -104,4 +106,14 @@ string Utils::GetSocketPair(int connfd)
         localIp, ntohs(localAddr.sin_port),
         remoteIp, ntohs(remoteAddr.sin_port));
     return string(buf);
+}
+
+// 返回'/'结束的绝对路径
+string Utils::GetAbsDir(string filePath)
+{
+	char rpath[PATH_MAX];
+	realpath(filePath.c_str(), rpath);
+	string dir = string(rpath);	
+	string::size_type lastpos = dir.find_last_of('/');
+	return dir.substr(0, lastpos + 1);
 }

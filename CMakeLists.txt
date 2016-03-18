@@ -22,6 +22,11 @@ set(SRCS
 )
 add_executable(ThisSocks ${SRCS} src/main.cpp)
 target_link_libraries(ThisSocks pthread)
+
+set(CMAKE_INSTALL_PREFIX /usr/local)
+install(PROGRAMS ${PROJECT_BINARY_DIR}/ThisSocks DESTINATION bin)
+install(FILES conf/server.conf DESTINATION /etc/ThisSocks)
+
 execute_process(
 	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
 	COMMAND cp -u ${PROJECT_SOURCE_DIR}/gtest/curl.bash ${PROJECT_BINARY_DIR}

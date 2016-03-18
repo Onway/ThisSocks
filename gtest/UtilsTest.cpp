@@ -143,3 +143,23 @@ TEST(Split, Default) {
 	ASSERT_EQ(1, result.size());
 	EXPECT_EQ("baidu.com", result[0]);
 }
+
+TEST(GetAbsDir, Default) {
+	string fpath = "/";
+	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
+
+	fpath = "/usr";
+	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
+
+	fpath = "/usr/";
+	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
+
+	fpath = "/usr/local";
+	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
+
+	fpath = "/usr/local/";
+	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
+
+	fpath = "/etc/passwd";
+	EXPECT_EQ("/etc/", Utils::GetAbsDir(fpath));
+}
