@@ -25,7 +25,12 @@ target_link_libraries(ThisSocks pthread)
 
 set(CMAKE_INSTALL_PREFIX /usr/local)
 install(PROGRAMS ${PROJECT_BINARY_DIR}/ThisSocks DESTINATION bin)
-install(FILES conf/server.conf DESTINATION /etc/ThisSocks)
+install(FILES
+	conf/client.conf conf/server.conf conf/passwd.conf
+
+	DESTINATION
+	/etc/ThisSocks
+)
 
 execute_process(
 	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
