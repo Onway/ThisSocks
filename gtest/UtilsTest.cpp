@@ -149,17 +149,35 @@ TEST(GetAbsDir, Default) {
 	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
 
 	fpath = "/usr";
-	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
+	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
 
 	fpath = "/usr/";
-	EXPECT_EQ("/", Utils::GetAbsDir(fpath));
+	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
 
 	fpath = "/usr/local";
-	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
+	EXPECT_EQ("/usr/local/", Utils::GetAbsDir(fpath));
 
 	fpath = "/usr/local/";
-	EXPECT_EQ("/usr/", Utils::GetAbsDir(fpath));
+	EXPECT_EQ("/usr/local/", Utils::GetAbsDir(fpath));
 
 	fpath = "/etc/passwd";
 	EXPECT_EQ("/etc/", Utils::GetAbsDir(fpath));
+}
+
+TEST(JoinPath, Default) {
+	string dir = "/";
+	string path = "etc";
+	EXPECT_EQ("/etc", Utils::JoinPath(dir, path));
+
+	dir = "/";
+	path = "etc/";
+	EXPECT_EQ("/etc", Utils::JoinPath(dir, path));
+
+	dir = "";
+	path = "/etc/";
+	EXPECT_EQ("/etc", Utils::JoinPath(dir, path));
+
+	dir = "/";
+	path = "etc/passwd";
+	EXPECT_EQ("/etc/passwd", Utils::JoinPath(dir, path));
 }

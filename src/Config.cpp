@@ -107,7 +107,8 @@ bool Config::ParseOption(const string &key, const string &value)
 	} else if (key == "LocalPort") {
 		LocalPort = atoi(value.c_str());
 	} else if (key == "PwdFile") {
-		PwdFile = value;
+		string dir = Utils::GetAbsDir(CfgFile);
+		PwdFile = Utils::JoinPath(dir, value);
 	} else if (key == "Username") {
 		Username = value;
 	} else if (key == "Password") {

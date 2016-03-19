@@ -15,5 +15,6 @@ public:
 
     static std::string GetSocketPair(int connfd);
 	static std::string GetAbsDir(std::string filePath);
+	static std::string JoinPath(std::string dir, std::string path);
 };
 #endif
