@@ -18,10 +18,37 @@
 
 ## 运行
     # 服务端侦听127.0.0.1:8389
-	./ThisSocks -C conf/server.conf
+	./ThisSocks -D -C conf/server.conf
 
 	# 客户端侦听127.0.0.1:1081
-	./ThisSocks -C conf/client.conf
+	./ThisSocks -D -C conf/client.conf
 
 	# 运行使用了curl的测试脚本
 	./curl.bash
+
+## 安装
+	sudo make install
+
+	# 启动客户端和服务端服务
+	service ThisSocks_C start
+	service ThisSocks_S start
+
+	# 停止服务
+	service ThisSocks_C stop
+	service ThisSocks_S stop
+
+## 卸载
+	# 在build目录执行
+	cat install_manifest.txt | sudo xargs rm
+
+	# 有什么办法可以不用执行这句？
+	sudo rm -rf /etc/ThisSocks
+
+## 开机启动
+	# 安装后执行
+	sudo update-rc.d ThisSocks_C defaults
+	sudo update-rc.d ThisSocks_S defaults
+
+	# 卸载后执行
+	sudo update-rc.d ThisSoks_C remove
+	sudo update-rc.d ThisSoks_S remove
