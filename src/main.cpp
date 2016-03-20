@@ -2,11 +2,13 @@
 #include "Config.h"
 #include "Proxy.h"
 #include "Logger.h"
+#include "Passwd.h"
 #include <string>
 #include <cstdlib>
 #include <cassert>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pwd.h>
 #include <sys/resource.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -16,10 +18,13 @@
 using namespace std;
 
 static void daemonize();
-static void lockfile();
+static void savepid();
+static void dropprivilege();
 
 int main(int argc, char *argv[])
 {
+	dropprivilege();
+
 	int ret = GConfig.Init(argc, argv);
 	if (ret <= 0) {
 		return ret;
@@ -30,7 +35,7 @@ int main(int argc, char *argv[])
 	}
 	GLogger.Init(GConfig.RunAsDaemon ? argv[0] : 0);
 	if (GConfig.RunAsDaemon) {
-		lockfile();
+		savepid();
 	}
 
 	string listenAddr;
@@ -50,8 +55,6 @@ int main(int argc, char *argv[])
 	}
 	srv.Run();
 
-	// Proxy *proxy = new Proxy();
-    // srv.Run(proxy);
 	return 1; // error occured
 }
 
@@ -83,12 +86,12 @@ void daemonize()
 	fd0 = open("/dev/null", O_RDWR);
 	fd1 = dup(fd0);
 	fd2 = dup(fd0);
-    assert(fd0 == 0);
+	assert(fd0 == 0);
     assert(fd1 == 1);
     assert(fd2 == 2);
 }
 
-void lockfile()
+void savepid()
 {
 	string lockfile;
 	if (GConfig.RunAsClient) {
@@ -121,4 +124,28 @@ void lockfile()
 	ftruncate(fd, 0);
 	sprintf(buf, "%ld", (long)getpid());
 	write(fd, buf, strlen(buf));
+}
+
+void dropprivilege()
+{
+	struct passwd *pwd = getpwnam("root");
+	if (pwd == NULL) {
+		perror("getpwname root error");
+		exit(1);		
+	}
+
+	uid_t euid = geteuid();
+	if (euid != pwd->pw_uid) {
+		return;
+	}
+
+	pwd = getpwnam("nobody");
+	if (pwd == NULL) {
+		perror("getpwname nobody error");
+		exit(1);
+	}
+	if (setuid(pwd->pw_uid) == -1) {
+		perror("setuid nodoby error");
+		exit(1);
+	}
 }
