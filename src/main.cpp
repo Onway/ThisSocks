@@ -20,6 +20,9 @@ using namespace std;
 static void daemonize();
 static void savepid();
 static void dropprivilege();
+static string getlockfile();
+static void setupsignal();
+static void sig_handler(int signo);
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +37,7 @@ int main(int argc, char *argv[])
 		daemonize();
 	}
 	GLogger.Init(GConfig.RunAsDaemon ? argv[0] : 0);
+	setupsignal();
 	if (GConfig.RunAsDaemon) {
 		savepid();
 	}
@@ -93,13 +97,7 @@ void daemonize()
 
 void savepid()
 {
-	string lockfile;
-	if (GConfig.RunAsClient) {
-		lockfile = LOCKDIR + string("/ThisSocks_C.pid");
-	} else {
-		lockfile = LOCKDIR + string("/ThisSocks_S.pid");
-	}
-
+	string lockfile = getlockfile();
 	int fd = open(lockfile.c_str(), O_RDWR | O_CREAT, 
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0) {
@@ -144,8 +142,48 @@ void dropprivilege()
 		perror("getpwname nobody error");
 		exit(1);
 	}
+	if (setgid(pwd->pw_gid) == -1) {
+		perror("setgid nodoby error");
+		exit(1);
+	}
 	if (setuid(pwd->pw_uid) == -1) {
 		perror("setuid nodoby error");
 		exit(1);
 	}
+}
+
+void setupsignal()
+{
+	struct sigaction act;
+	act.sa_handler = sig_handler;	
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+
+	if (sigaction(SIGINT, &act, NULL) == -1
+		|| sigaction(SIGQUIT, &act, NULL) == -1
+		|| sigaction(SIGTERM, &act, NULL) == -1) {
+		GLogger.LogErr(LOG_ERR, "sigaction error");		
+		exit(1);
+	}
+}
+
+void sig_handler(int signo)
+{
+	if (signo == SIGINT || signo == SIGQUIT
+		|| signo == SIGTERM) {
+		string lockfile = getlockfile();
+		unlink(lockfile.c_str());
+		exit(0);
+	}
+}
+
+string getlockfile()
+{
+	string lockfile;
+	if (GConfig.RunAsClient) {
+		lockfile = LOCKDIR + string("/ThisSocks_C.pid");
+	} else {
+		lockfile = LOCKDIR + string("/ThisSocks_S.pid");
+	}
+	return lockfile;
 }

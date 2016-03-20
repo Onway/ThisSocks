@@ -21,7 +21,7 @@ stop() {
 	pgrep -L -F /var/tmp/${NAME}.pid > /dev/null 2>&1
 	if [ $? -eq 0 ]
 	then
-		kill `cat /var/tmp/${NAME}.pid`
+		kill -15 `cat /var/tmp/${NAME}.pid`
 	else
 		echo "not running!"
 	fi
