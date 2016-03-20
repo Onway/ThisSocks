@@ -1,0 +1,51 @@
+
+if [ -z $EXEC ] ; then
+	exit 1
+fi
+
+start() {
+	echo "Starting ${DESC} ..."
+
+	pgrep -L -F /var/tmp/${NAME}.pid > /dev/null
+	if [ $? -eq 0 ]
+	then
+		echo "already running!"
+	else
+		/usr/local/bin/${EXEC} -C /etc/${EXEC}/${CONF}
+	fi
+}
+
+stop() {
+	echo "Stopping ${DESC} ..."
+
+	pgrep -L -F /var/tmp/${NAME}.pid > /dev/null
+	if [ $? -eq 0 ]
+	then
+		kill `cat /var/tmp/${NAME}.pid`
+	else
+		echo "not running!"
+	fi
+}
+
+case "$1" in
+  start)
+	start
+	;;
+
+  stop)
+	stop
+	;;
+
+  restart|force-reload)
+	stop
+	start
+	;;
+
+  *)
+	N=/etc/init.d/${NAME}
+	echo "Usage: $N {start|stop|restart|force-reload} {client|server}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

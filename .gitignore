@@ -1,5 +1,5 @@
 *.o
-ThisSocks
+./ThisSocks
 gtest/Test*
 *.user
 lconf/
