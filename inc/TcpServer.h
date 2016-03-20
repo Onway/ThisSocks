@@ -13,11 +13,8 @@ public:
 
 private:
 	int CreateListenSocket(std::string srvAddr, int srvPort);
-	bool SetupSignalHandlers();
 	bool StartProcessThread(int connfd);
-
 	static void * ProcessRequestThread(void *arg);
-	static void sig_chld(int signo);
 
 	int listenfd;
 };

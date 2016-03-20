@@ -79,31 +79,6 @@ int TcpServer::CreateListenSocket(string srvAddr, int port)
 	return listenfd;
 }
 
-bool TcpServer::SetupSignalHandlers()
-{
-	struct sigaction act;
-
-	act.sa_handler = sig_chld;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-#ifdef SA_RESTART
-	act.sa_flags |= SA_RESTART;
-#endif
-	if (sigaction(SIGCHLD, &act, NULL) == -1) {
-		GLogger.LogErr(LOG_ERR, "sigaction error");
-		return false;
-	}
-	return true;
-}
-
-void TcpServer::sig_chld(int signo)
-{
-	if (signo == SIGCHLD) {
-		while (waitpid(-1, NULL, WNOHANG) > 0)
-			;
-	}
-}
-
 bool TcpServer::StartProcessThread(int connfd)
 {
 	pthread_attr_t pattr;
@@ -116,17 +91,26 @@ bool TcpServer::StartProcessThread(int connfd)
 		return false;
 	}
 
+	sigset_t set, oldset;
+	sigemptyset(&set);
+	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGQUIT);
+	sigaddset(&set, SIGTERM);
+	if (pthread_sigmask(SIG_BLOCK, &set, &oldset) != 0) {
+		GLogger.LogMsg(LOG_ERR, "pthread_sigmask SIG_BLOCK error");
+		return false;
+	}
+
 	pthread_t tid;
-	if (pthread_create(&tid, &pattr, ProcessRequestThread,
-				(void *)(long)connfd) != 0) {
+	int retcode = pthread_create(&tid, &pattr, ProcessRequestThread,
+				(void *)(long)connfd);
+	pthread_sigmask(SIG_SETMASK, &oldset, NULL);
+	pthread_attr_destroy(&pattr);
+	if (retcode != 0) {
 		GLogger.LogMsg(LOG_ERR, "pthread_create error");
 		return false;
 	}
-	
-	if (pthread_attr_destroy(&pattr) != 0) {
-		GLogger.LogMsg(LOG_ERR, "pthread_attr_destroy error");
-		return false;
-	}
+
 	return true;
 }
 
