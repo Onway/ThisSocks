@@ -50,7 +50,7 @@ ssize_t SimpleEncrypter::Write(const void *buf, size_t len)
         wbuf[i] = rbuf[i] + this->randChar;
     }
     ssize_t ret = write(this->fd, wbuf, len);
-    delete wbuf;
+    delete[] wbuf;
     return ret;
 }
 
