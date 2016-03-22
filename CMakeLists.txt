@@ -2,11 +2,14 @@ option(build_unit_test "build unit test" OFF)
 
 project(ThisSocks)
 cmake_minimum_required(VERSION 2.8)
+
 include_directories(
 	${PROJECT_SOURCE_DIR}/inc
 	${PROJECT_SOURCE_DIR}/gtest/include
 )
 
+set(CMAKE_CXX_FLAGS -Wall)
+set(CMAKE_CXX_FLAGS_DEBUG -g)
 set(SRCS
 	src/Utils.cpp
 	src/Logger.cpp
