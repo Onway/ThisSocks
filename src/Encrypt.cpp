@@ -44,7 +44,7 @@ ssize_t SimpleEncrypter::Read(void *buf, size_t len)
 
 ssize_t SimpleEncrypter::Write(const void *buf, size_t len)
 {
-    char *wbuf = new char[len];
+    char *wbuf = new char[len]();
     char *rbuf = (char *)buf;
     for (size_t i = 0; i < len; ++i) {
         wbuf[i] = rbuf[i] + this->randChar;

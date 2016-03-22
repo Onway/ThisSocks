@@ -146,7 +146,7 @@ bool Proxy::LoginProxyServer()
     buf[pos] = GConfig.Password.size();
     strncpy(buf + pos + 1, GConfig.Password.c_str(), buf[pos]);
 
-    int len = 2 + buf[1] + buf[pos];
+    int len = 2 + buf[0] + buf[pos];
     if (len != encrypter->Write(buf, len)) {
         GLogger.LogErr(LOG_ERR, "write username/password error");
         return false;
