@@ -6,6 +6,7 @@
 class EncryptBase
 {
 public:
+	EncryptBase() : fd(-1) {}
     virtual ~EncryptBase() {}
     virtual bool SetServerFd(int fd) = 0;
     virtual bool SetClientFd(int fd) = 0;
