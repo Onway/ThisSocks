@@ -6,32 +6,37 @@
 class EncryptBase
 {
 public:
-	EncryptBase() : fd(-1) {}
-    virtual ~EncryptBase() {}
+	EncryptBase();
+    virtual ~EncryptBase();
     virtual bool SetServerFd(int fd) = 0;
     virtual bool SetClientFd(int fd) = 0;
-    virtual ssize_t Read(void *buf, size_t len) = 0;
-    virtual ssize_t Write(const void *buf, size_t len) = 0;
-    int GetFd() { return fd; }
+    virtual ssize_t Read(void *buf, size_t len) const = 0;
+    virtual ssize_t Write(const void *buf, size_t len) const = 0;
+	virtual EncryptBase* clone() const = 0;
+    int GetFd() const;
+
 protected:
     int fd;
+};
+
+class SimpleEncrypter : public EncryptBase
+{
+public:
+	SimpleEncrypter();
+    bool SetServerFd(int fd);
+    bool SetClientFd(int fd);
+    ssize_t Read(void *buf, size_t len) const;
+    ssize_t Write(const void *buf, size_t len) const;
+	SimpleEncrypter* clone() const;
+
+private:
+    char randChar;
 };
 
 class EncryptFactory
 {
 public:
     EncryptBase* GetEncrypter();
-};
-
-class SimpleEncrypter : public EncryptBase
-{
-public:
-    virtual bool SetServerFd(int fd);
-    virtual bool SetClientFd(int fd);
-    virtual ssize_t Read(void *buf, size_t len);
-    virtual ssize_t Write(const void *buf, size_t len);
-private:
-    char randChar;
 };
 
 extern EncryptFactory GEncryptFactory;

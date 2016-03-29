@@ -3,7 +3,27 @@
 #include <ctime>
 #include <cstdlib>
 
+// global EncryptFactory
 EncryptFactory GEncryptFactory;
+
+// EncryptBase implementation
+EncryptBase::EncryptBase() : fd(-1)
+{
+}
+
+EncryptBase::~EncryptBase()
+{
+}
+
+int EncryptBase::GetFd() const
+{
+	return fd;
+}
+
+// SimpleEncrypter implementation
+SimpleEncrypter::SimpleEncrypter() : randChar(-1)
+{
+}
 
 bool SimpleEncrypter::SetClientFd(int fd)
 {
@@ -30,7 +50,7 @@ bool SimpleEncrypter::SetServerFd(int fd)
     return true;
 }
 
-ssize_t SimpleEncrypter::Read(void *buf, size_t len)
+ssize_t SimpleEncrypter::Read(void *buf, size_t len) const
 {
     char *rbuf = (char *)buf;
     ssize_t readn = read(this->fd, buf, len);
@@ -42,7 +62,7 @@ ssize_t SimpleEncrypter::Read(void *buf, size_t len)
     return readn;
 }
 
-ssize_t SimpleEncrypter::Write(const void *buf, size_t len)
+ssize_t SimpleEncrypter::Write(const void *buf, size_t len) const
 {
     char *wbuf = new char[len]();
     char *rbuf = (char *)buf;
@@ -54,6 +74,12 @@ ssize_t SimpleEncrypter::Write(const void *buf, size_t len)
     return ret;
 }
 
+SimpleEncrypter* SimpleEncrypter::clone() const
+{
+	return new SimpleEncrypter(*this);
+}
+
+// EncryptFactory implementation
 EncryptBase* EncryptFactory::GetEncrypter()
 {
     return new SimpleEncrypter();
