@@ -22,8 +22,11 @@ class Proxy
 {
 public:
     Proxy();
-    void Run(int connfd, int &srvfd);
+	Proxy(const Proxy& proxy);
     virtual ~Proxy();
+	Proxy& operator=(const Proxy& proxy);
+
+    void Run(int connfd, int &srvfd);
 
 protected:
     virtual void Run(int, const char *, int, int&) {}

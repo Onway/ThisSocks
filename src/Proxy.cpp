@@ -14,12 +14,28 @@ Proxy::Proxy() : encrypter(NULL)
 {
 }
 
+Proxy::Proxy(const Proxy& proxy) : encrypter(NULL)
+{
+	if (proxy.encrypter != NULL) {
+		encrypter = proxy.encrypter->clone();
+	}
+}
+
 Proxy::~Proxy()
 {
 	if (encrypter != NULL) {
 		delete encrypter;
 		encrypter = NULL;
 	}
+}
+
+Proxy& Proxy::operator=(const Proxy& proxy)
+{
+	if (encrypter != NULL) {
+		delete encrypter;
+	}
+	encrypter = proxy.encrypter->clone();
+	return *this;
 }
 
 void Proxy::Run(int srcfd, int &srvfd)
