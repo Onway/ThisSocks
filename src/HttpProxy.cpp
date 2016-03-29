@@ -18,20 +18,24 @@ void HttpServerProxy::Process(int srcfd, const char *request, int len) const
         return;
     }
 
-    string tmp;
-    tmp.resize(reqstr.size());
-    transform(reqstr.begin(), reqstr.end(), tmp.begin(), ::tolower);
-    string::size_type idx = tmp.find("proxy-connection");
-    if (idx != string::npos) {
-        reqstr.erase(idx, 6);
-    }
-    len = reqstr.size();
-    if (len != write(remotefd, reqstr.c_str(), len)) {
-        GLogger.LogErr(LOG_ERR, "write request to real server error");
-        return;
-    }
+	do {
+		string tmp;
+		tmp.resize(reqstr.size());
+		transform(reqstr.begin(), reqstr.end(), tmp.begin(), ::tolower);
+		string::size_type idx = tmp.find("proxy-connection");
+		if (idx != string::npos) {
+			reqstr.erase(idx, 6);
+		}
+		len = reqstr.size();
+		if (len != write(remotefd, reqstr.c_str(), len)) {
+			GLogger.LogErr(LOG_ERR, "write request to real server error");
+			break;
+		}
 
-    ForwardData(srcfd, remotefd);
+		ForwardData(srcfd, remotefd);
+	} while (0);
+
+	close(remotefd);
 }
 
 bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port) const

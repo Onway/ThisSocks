@@ -36,14 +36,18 @@ void HttpsServerProxy::Process(int srcfd, const char *request, int len) const
         return;
     }
 
-    resstr += " 200 Connection Established\r\n\r\n";
-    int reslen = resstr.size();
-    if (reslen != encrypter->Write(resstr.c_str(), reslen)) {
-        GLogger.LogErr(LOG_ERR, "write 200 response error");
-        return;
-    }
+	do {
+		resstr += " 200 Connection Established\r\n\r\n";
+		int reslen = resstr.size();
+		if (reslen != encrypter->Write(resstr.c_str(), reslen)) {
+			GLogger.LogErr(LOG_ERR, "write 200 response error");
+			return;
+		}
 
-    ForwardData(srcfd, remotefd);
+		ForwardData(srcfd, remotefd);
+	} while (0);
+
+	close(remotefd);
 }
 
 bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port) const

@@ -11,14 +11,14 @@ using namespace std;
 
 Logger GLogger;
 
-Logger::Logger() : ident(0)
+Logger::Logger() : ident(NULL)
 {
 
 }
 
 void Logger::Init(const char *ident)
 {
-	if (ident != 0) {
+	if (ident != NULL) {
 		this->ident = ident;
 		openlog(ident, LOG_PID, LOG_USER);
 	}
@@ -46,7 +46,7 @@ void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
 	vsnprintf(logbuf, LOGMAX, fmt, ap);
 
 	string logline;
-	if (ident == 0) {
+	if (ident == NULL) {
 		AppendPreix(logline);
 	}
 	AppendLevel(logline, priority);
@@ -55,13 +55,13 @@ void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
 	char errbuf[LOGMAX];
 	if (logerr) {
 		strerror_r(errno, errbuf, sizeof(errbuf));
-		if (ident == 0) {
+		if (ident == NULL) {
 			printf("%s: %s\n", logline.c_str(), errbuf);
 		} else if (priority != LOG_DEBUG) {
 			syslog(priority,"%s: %s", logline.c_str(), errbuf);
 		}
 	} else {
-		if (ident == 0) {
+		if (ident == NULL) {
 			printf("%s\n", logline.c_str());
 		} else if (priority != LOG_DEBUG) {
 			syslog(priority, "%s", logline.c_str());

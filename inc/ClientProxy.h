@@ -6,7 +6,6 @@
 class ClientProxy : public Proxy
 {
 protected:
-    void Run(int srcfd, const char *request, int len, int &srvfd);
 	void Process(int srcfd);
 
 private:

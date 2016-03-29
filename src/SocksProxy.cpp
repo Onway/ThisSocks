@@ -61,16 +61,20 @@ void SocksServerProxy::Process(int srcfd, const char*, int) const
         return;
     }
 
-    char res[10];
-    memset(res, 0, 10);
-    res[0] = 5;
-    res[3] = 1;
-    if (10 != encrypter->Write(res, 10)) {
-        GLogger.LogErr(LOG_ERR, "write connect response error");
-        return;
-    }
+	do {
+		char res[10];
+		memset(res, 0, 10);
+		res[0] = 5;
+		res[3] = 1;
+		if (10 != encrypter->Write(res, 10)) {
+			GLogger.LogErr(LOG_ERR, "write connect response error");
+			break;
+		}
 
-    ForwardData(srcfd, remotefd);
+		ForwardData(srcfd, remotefd);
+	} while (0);
+
+	close(remotefd);
 }
 
 bool SocksServerProxy::isMatch(const char *request, int len)

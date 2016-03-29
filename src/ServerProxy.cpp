@@ -6,10 +6,6 @@
 
 using std::string;
 
-void ServerProxy::Run(int srcfd, const char *request, int len, int &srvfd)
-{
-}
-
 void ServerProxy::Process(int srcfd)
 {
 	encrypter = GEncryptFactory.GetEncrypter();

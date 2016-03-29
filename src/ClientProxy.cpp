@@ -2,10 +2,6 @@
 #include "Logger.h"
 #include "Config.h"
 
-void ClientProxy::Run(int srcfd, const char *request, int len, int &srvfd)
-{
-}
-
 void ClientProxy::Process(int srcfd)
 {
 	int len;
@@ -41,7 +37,7 @@ void ClientProxy::Process(int srcfd)
 		}
 
 		ForwardData(srcfd, tarfd);
-	} while(0);
+	} while (0);
 
 	close(tarfd);
 }

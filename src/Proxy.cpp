@@ -50,10 +50,6 @@ void Proxy::Run(int srcfd)
 	delete proxy;
 }
 
-void Proxy::Process(int srcfd)
-{
-}
-
 void Proxy::ForwardData(int srcfd, int tarfd) const
 {
     bool halfClose = false;

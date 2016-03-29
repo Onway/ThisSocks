@@ -28,9 +28,9 @@ public:
 	static void Run(int srcfd);
 
 protected:
-	virtual void Process(int srcfd);
+	virtual void Process(int srcfd) = 0;
     void ForwardData(int srcfd, int tarfd) const;
-    EncryptBase *encrypter;
+    EncryptBase* encrypter;
 
 private:
     int ForwardData(int srcfd, int tarfd, bool fromClient) const;
