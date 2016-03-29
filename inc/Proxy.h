@@ -30,7 +30,7 @@ public:
 protected:
 	virtual void Process(int srcfd);
     virtual void Run(int, const char *, int, int&) {}
-    void ForwardData(int srcfd, int tarfd);
+    void ForwardData(int srcfd, int tarfd) const;
     EncryptBase *encrypter;
 
 private:
@@ -39,7 +39,7 @@ private:
     bool ValidateProxyClient();
     int ConnectProxyServer();
     bool LoginProxyServer();
-    int ForwardData(int srcfd, int tarfd, bool fromClient);
+    int ForwardData(int srcfd, int tarfd, bool fromClient) const;
 };
 
 #endif

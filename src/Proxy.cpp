@@ -245,7 +245,7 @@ int Proxy::ConnectRealServer(uint32_t ip, uint16_t port)
     return remotefd;
 }
 
-void Proxy::ForwardData(int srcfd, int tarfd)
+void Proxy::ForwardData(int srcfd, int tarfd) const
 {
     bool halfClose = false;
 	fd_set fdset;
@@ -287,7 +287,7 @@ void Proxy::ForwardData(int srcfd, int tarfd)
 	}
 }
 
-int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient)
+int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient) const
 {
     bool encrypted = (GConfig.RunAsClient && !fromClient)
         || (!GConfig.RunAsClient && fromClient);

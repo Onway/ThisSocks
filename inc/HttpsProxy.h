@@ -13,7 +13,7 @@ protected:
 	void Process(int srcfd, const char *request, int len) const;
 
 private:
-    bool ParseIpPort(std::string &domain, uint32_t &ip, uint16_t &port);
+    bool ParseIpPort(std::string &domain, uint32_t &ip, uint16_t &port) const;
 };
 
 #endif // HTTPSPROXY_H
