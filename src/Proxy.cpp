@@ -38,6 +38,10 @@ Proxy& Proxy::operator=(const Proxy& proxy)
 	return *this;
 }
 
+void Proxy::Process(int srcfd)
+{
+}
+
 void Proxy::Run(int srcfd, int &srvfd)
 {
     char request[MAXBUF];

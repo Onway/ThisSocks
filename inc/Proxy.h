@@ -25,12 +25,11 @@ public:
 	Proxy(const Proxy& proxy);
     virtual ~Proxy();
 	Proxy& operator=(const Proxy& proxy);
-
     void Run(int connfd, int &srvfd);
 
 protected:
+	virtual void Process(int srcfd);
     virtual void Run(int, const char *, int, int&) {}
-	virtual void Process(int srcfd) {}
     void ForwardData(int srcfd, int tarfd);
     EncryptBase *encrypter;
 

@@ -3,6 +3,10 @@
 
 using namespace std;
 
+void SocksServerProxy::Process(int srcfd, const char *request, int len) const
+{
+}
+
 void SocksServerProxy::Run(int srcfd, const char *, int, int &srvfd)
 {
     char buf[MAXBUF] = { 5, 0 };
@@ -33,7 +37,7 @@ void SocksServerProxy::Run(int srcfd, const char *, int, int &srvfd)
         port = *((uint16_t *)&buf[8]);
     } else if (buf[3] == 3) {
         if (readn < 5) {
-            GLogger.LogErr(LOG_NOTICE, "read host length error");
+            GLogger.LogMsg(LOG_NOTICE, "read host length error");
             return;
         }
         int hostlen = buf[4];
@@ -50,7 +54,10 @@ void SocksServerProxy::Run(int srcfd, const char *, int, int &srvfd)
             return;
         }
         ip = *((uint32_t *)*hptr->h_addr_list);
-    }
+    } else {
+		GLogger.LogMsg(LOG_NOTICE, "unsupported socks address type");
+		return;
+	}
     port = ntohs(port);
 
     int remotefd = ConnectRealServer(ip, port);

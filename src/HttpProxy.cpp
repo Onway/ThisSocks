@@ -4,6 +4,10 @@
 
 using namespace std;
 
+void HttpServerProxy::Process(int srcfd, const char *request, int len) const
+{
+}
+
 bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
 {
     string::size_type sIdx = request.find("http://");

@@ -12,7 +12,6 @@ void ServerProxy::Run(int srcfd, const char *request, int len, int &srvfd)
 
 void ServerProxy::Process(int srcfd)
 {
-	/*
 	encrypter = GEncryptFactory.GetEncrypter();
 	if (!encrypter->SetServerFd(srcfd)) {
 		return;
@@ -29,11 +28,17 @@ void ServerProxy::Process(int srcfd)
 		return;
 	}
 
-	Proxy* proxy = SelectServerProxy(request, len);
+	ServerProxy* proxy = SelectServerProxy(request, len);
 	if (proxy == NULL) {
 		return;
 	}
-	*/
+	proxy->encrypter = encrypter->clone();
+	proxy->Process(srcfd, request, len);
+	delete proxy;
+}
+
+void ServerProxy::Process(int src, const char* request, int len) const
+{
 }
 
 bool ServerProxy::ValidateProxyClient() const

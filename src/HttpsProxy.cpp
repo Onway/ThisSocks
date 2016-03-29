@@ -5,6 +5,10 @@
 
 using namespace std;
 
+void HttpsServerProxy::Process(int srcfd, const char *request, int len) const
+{
+}
+
 bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port)
 {
     vector<string> part;
