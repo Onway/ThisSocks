@@ -1,9 +1,9 @@
 #ifndef HTTPSPROXY_H
 #define HTTPSPROXY_H
 
-#include "Proxy.h"
+#include "ServerProxy.h"
 
-class HttpsServerProxy : public Proxy
+class HttpsServerProxy : public ServerProxy
 {
 public:
     static bool isMatch(const char *request, int len);

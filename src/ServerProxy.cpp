@@ -102,7 +102,7 @@ int ServerProxy::ConnectRealServer(uint32_t ip, uint16_t port) const
     return remotefd;
 }
 
-Proxy* ServerProxy::SelectServerProxy(const char *request, int len) const
+ServerProxy* ServerProxy::SelectServerProxy(const char *request, int len) const
 {
 	if (SocksServerProxy::isMatch(request, len)) {
 		return new SocksServerProxy();

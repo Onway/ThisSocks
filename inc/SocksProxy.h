@@ -1,9 +1,9 @@
 #ifndef SOCKSPROXY_H
 #define SOCKSPROXY_H
 
-#include "Proxy.h"
+#include "ServerProxy.h"
 
-class SocksServerProxy : public Proxy
+class SocksServerProxy : public ServerProxy
 {
 public:
     static bool isMatch(const char *request, int);

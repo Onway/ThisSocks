@@ -27,17 +27,16 @@ public:
 
 protected:
     virtual void Run(int, const char *, int, int&) {}
-
-    Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
-    bool ValidateProxyClient();
-    int ConnectProxyServer();
-    bool LoginProxyServer();
-    int ConnectRealServer(uint32_t ip, uint16_t port);
+	virtual void Process(int srcfd) {}
     void ForwardData(int srcfd, int tarfd);
-
     EncryptBase *encrypter;
 
 private:
+    Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
+    int ConnectRealServer(uint32_t ip, uint16_t port);
+    bool ValidateProxyClient();
+    int ConnectProxyServer();
+    bool LoginProxyServer();
     int ForwardData(int srcfd, int tarfd, bool fromClient);
 };
 
