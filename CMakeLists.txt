@@ -18,6 +18,7 @@ set(SRCS
 	src/Passwd.cpp
 	src/TcpServer.cpp
 	src/Proxy.cpp
+	src/ServerProxy.cpp
 	src/SocksProxy.cpp
 	src/HttpsProxy.cpp
 	src/HttpProxy.cpp
