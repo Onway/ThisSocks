@@ -25,20 +25,14 @@ public:
 	Proxy(const Proxy& proxy);
     virtual ~Proxy();
 	Proxy& operator=(const Proxy& proxy);
-    void Run(int connfd, int &srvfd);
+	static void Run(int srcfd);
 
 protected:
 	virtual void Process(int srcfd);
-    virtual void Run(int, const char *, int, int&) {}
     void ForwardData(int srcfd, int tarfd) const;
     EncryptBase *encrypter;
 
 private:
-    Proxy* SelectLocalProxy(bool isClient, const char *request, int len);
-    int ConnectRealServer(uint32_t ip, uint16_t port);
-    bool ValidateProxyClient();
-    int ConnectProxyServer();
-    bool LoginProxyServer();
     int ForwardData(int srcfd, int tarfd, bool fromClient) const;
 };
 

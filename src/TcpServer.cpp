@@ -117,14 +117,7 @@ bool TcpServer::StartProcessThread(int connfd)
 void * TcpServer::ProcessRequestThread(void *arg)
 {
 	int connfd = (int)(long)arg;
-	int srvfd = -1;
-	Proxy proxy;
-
-	proxy.Run(connfd, srvfd);
+	Proxy::Run(connfd);
 	close(connfd);
-	if (srvfd != -1) {
-		close(srvfd);
-	}
-
 	return (void *)0;
 }

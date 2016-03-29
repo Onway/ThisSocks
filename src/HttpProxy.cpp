@@ -73,37 +73,6 @@ bool HttpServerProxy::ParseIpPort(string &request, uint32_t &ip, uint16_t &port)
     return true;
 }
 
-void HttpServerProxy::Run(int srcfd, const char *request, int len, int &srvfd)
-{
-    string reqstr = string(request, len);
-    uint32_t ip;
-    uint16_t port;
-    if (!ParseIpPort(reqstr, ip, port)) {
-        return;
-    }
-
-    int remotefd = ConnectRealServer(ip, port);
-    if (remotefd < 0) {
-        return;
-    }
-	srvfd = remotefd;
-
-    string tmp;
-    tmp.resize(reqstr.size());
-    transform(reqstr.begin(), reqstr.end(), tmp.begin(), ::tolower);
-    string::size_type idx = tmp.find("proxy-connection");
-    if (idx != string::npos) {
-        reqstr.erase(idx, 6);
-    }
-    len = reqstr.size();
-    if (len != write(remotefd, reqstr.c_str(), len)) {
-        GLogger.LogErr(LOG_ERR, "write request to real server error");
-        return;
-    }
-
-    ForwardData(srcfd, remotefd);
-}
-
 bool HttpServerProxy::isMatch(const char *, int)
 {
     return true;
