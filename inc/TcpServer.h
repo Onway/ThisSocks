@@ -8,15 +8,12 @@
 class TcpServer
 {
 public:
-	bool Init(std::string srvAddr, int srvPort);
-	void Run();
+	void Run(std::string srvAddr, int srvPort);
 
 private:
 	int CreateListenSocket(std::string srvAddr, int srvPort);
 	bool StartProcessThread(int connfd);
-	static void * ProcessRequestThread(void *arg);
-
-	int listenfd;
+	static void* ProcessRequestThread(void *arg);
 };
 
 #endif

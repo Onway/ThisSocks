@@ -14,19 +14,14 @@
 
 using namespace std;
 
-bool TcpServer::Init(string srvAddr, int port)
+void TcpServer::Run(string srvAddr, int port)
 {
-	if ((listenfd = CreateListenSocket(srvAddr, port)) < 0) {
-		return false;
+	int listenfd = CreateListenSocket(srvAddr, port);
+	if (listenfd < 0) {
+		return;
 	}
 
-	return true;
-}
-
-void TcpServer::Run()
-{
 	int connfd;
-
 	while (1) {
 		if ((connfd = accept(listenfd, NULL, 0)) == -1) {
 			if (errno == EINTR || errno == ECONNABORTED) {
@@ -114,7 +109,7 @@ bool TcpServer::StartProcessThread(int connfd)
 	return true;
 }
 
-void * TcpServer::ProcessRequestThread(void *arg)
+void* TcpServer::ProcessRequestThread(void *arg)
 {
 	int connfd = (int)(long)arg;
 	Proxy::Run(connfd);

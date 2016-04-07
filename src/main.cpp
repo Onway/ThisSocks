@@ -53,10 +53,7 @@ int main(int argc, char *argv[])
 	}
 
     TcpServer srv;
-    if (!srv.Init(listenAddr, listenPort)) {
-		return -1;
-	}
-	srv.Run();
+	srv.Run(listenAddr, listenPort);
 
 	return 1; // error occured
 }
