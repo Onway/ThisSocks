@@ -13,7 +13,6 @@ Logger GLogger;
 
 Logger::Logger() : ident(NULL)
 {
-
 }
 
 void Logger::Init(const char *ident)
@@ -24,7 +23,7 @@ void Logger::Init(const char *ident)
 	}
 }
 
-void Logger::LogMsg(int priority, const char *fmt, ...)
+void Logger::LogMsg(int priority, const char *fmt, ...) const
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -32,7 +31,7 @@ void Logger::LogMsg(int priority, const char *fmt, ...)
 	va_end(ap);	
 }
 
-void Logger::LogErr(int priority, const char *fmt, ...)
+void Logger::LogErr(int priority, const char *fmt, ...) const
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -40,7 +39,7 @@ void Logger::LogErr(int priority, const char *fmt, ...)
 	va_end(ap);	
 }
 
-void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
+void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap) const
 {
 	char logbuf[LOGMAX];
 	vsnprintf(logbuf, LOGMAX, fmt, ap);
@@ -69,7 +68,7 @@ void Logger::Log(bool logerr, int priority, const char *fmt, va_list ap)
 	}
 }
 
-void Logger::AppendPreix(string &logline)
+void Logger::AppendPreix(string &logline) const
 {
 	time_t t = time(0);
 	char buf[50];
@@ -82,7 +81,7 @@ void Logger::AppendPreix(string &logline)
 	logline += buf;
 }
 
-void Logger::AppendLevel(string &logline, int priority)
+void Logger::AppendLevel(string &logline, int priority) const
 {
 	logline += "(";
 	switch (priority) {

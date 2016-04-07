@@ -21,13 +21,13 @@ public:
 	int Init(int argc, char *argv[]);
 
 private:
-	bool LoadFromFile();
-	bool CheckOptions();
-	void PrintUsage();
-	int ParseArguments(int argc, char *argv[]);
-	bool ParseOption(const std::string &key, const std::string &value);
+	bool _D; // debug mode
 
-	bool _D;
+	int ParseArguments(int argc, char *argv[]);
+	bool LoadFromFile();
+	bool ParseOption(const std::string &key, const std::string &value);
+	bool CheckOptions() const;
+	void PrintUsage() const;
 };
 
 extern Config GConfig;

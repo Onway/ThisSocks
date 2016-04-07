@@ -1,6 +1,5 @@
 #include "TcpServer.h"
 #include "Config.h"
-#include "Proxy.h"
 #include "Logger.h"
 #include "Passwd.h"
 #include <string>
@@ -15,7 +14,7 @@
 
 #define LOCKDIR "/var/tmp"
 
-using namespace std;
+using std::string;
 
 static void daemonize();
 static void savepid();

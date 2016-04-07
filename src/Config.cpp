@@ -11,7 +11,8 @@ using namespace std;
 Config GConfig;
 
 Config::Config()
-    : ServerPort(0), LocalPort(0), RunAsClient(false), RunAsDaemon(false),
+    : ServerPort(0), LocalPort(0),
+	RunAsClient(false), RunAsDaemon(false),
 	_D(false)
 {
 }
@@ -25,7 +26,7 @@ int Config::Init(int argc, char *argv[])
 		}
 	}
 
-	if (_D) {
+	if (_D) { // debug mode enabled
 		RunAsDaemon = false;
 	}
 
@@ -123,19 +124,7 @@ bool Config::ParseOption(const string &key, const string &value)
 	return true;
 }
 
-void Config::PrintUsage()
-{
-	cout << "ThisSocks v2.2" << endl;
-	cout << endl;
-	cout << "Usage: ThisSocks [-D] <-C FILE>" << endl;
-	cout << "       ThisSocks -h" << endl;
-	cout << "    -C FILE        path to config file" << endl;
-	cout << "    -D             debug mode" << endl;
-	cout << "    -h             show this usage and exit" << endl;
-	cout << endl;
-}
-
-bool Config::CheckOptions()
+bool Config::CheckOptions() const
 {
 	bool isValid = true;
 	if (RunAsClient) {
@@ -173,3 +162,16 @@ bool Config::CheckOptions()
 
 	return isValid;
 }
+
+void Config::PrintUsage() const
+{
+	cout << "ThisSocks v2.2" << endl;
+	cout << endl;
+	cout << "Usage: ThisSocks [-D] <-C FILE>" << endl;
+	cout << "       ThisSocks -h" << endl;
+	cout << "    -C FILE        path to config file" << endl;
+	cout << "    -D             debug mode" << endl;
+	cout << "    -h             show this usage and exit" << endl;
+	cout << endl;
+}
+
