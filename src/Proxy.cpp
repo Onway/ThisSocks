@@ -50,9 +50,14 @@ void Proxy::Run(int srcfd)
 	delete proxy;
 }
 
+/*
+ * 在srcfd和tarfd之间相互转发数据
+ * srcfd是发起请求的客户端
+ * tarfd是处理请求的服务端
+ */
 void Proxy::ForwardData(int srcfd, int tarfd) const
 {
-    bool halfClose = false;
+    bool sendClose = false;
 	fd_set fdset;
 	while (1) {
         FD_ZERO(&fdset);
@@ -67,35 +72,43 @@ void Proxy::ForwardData(int srcfd, int tarfd) const
 			break;
 		}
 
+		// 转发请求
         int ret;
         if (FD_ISSET(srcfd, &fdset)) {
             if ((ret = ForwardData(srcfd, tarfd, true)) < 0) { // error
                 break;
-            } else if (ret == 0 && halfClose) {
+            } else if (ret == 0 && sendClose) {
                 break;
-            } else if (ret == 0) {
-                halfClose = true;
+            } else if (ret == 0) { // 发送端已经关闭，触发接收端的半关闭
+                sendClose = true;
 				shutdown(tarfd, SHUT_WR);
             }
 		}
 
+		// 转发回复
         if (FD_ISSET(tarfd, &fdset)) {
             if ((ret = ForwardData(tarfd, srcfd, false)) < 0) {
                 break;
-            } else if (ret == 0 && halfClose) {
+            } else if (ret == 0 && sendClose) {
                 break;
-            } else if (ret == 0) {
-                halfClose = true;
+            } else if (ret == 0) { // 发送端已经关闭，触发接收端的半关闭
+                sendClose = true;
 				shutdown(srcfd, SHUT_WR);
             }
 		}
 	}
 }
 
-int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient) const
+/*
+ * 将来自srcfd的数据转发至tarfd
+ * isRequest标识是否用户的请求数据
+ * 成功返回1;失败返回-1;srcfd关闭返回0
+ */
+int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
 {
-    bool encrypted = (GConfig.RunAsClient && !fromClient)
-        || (!GConfig.RunAsClient && fromClient);
+	// 标识读端是否已加密
+    bool encrypted = (GConfig.RunAsClient && !isRequest) // 客户端收到回复
+        || (!GConfig.RunAsClient && isRequest); // 服务器收到请求
 
     char buf[MAXBUF];
     int readcnt;
@@ -106,7 +119,7 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient) const
     }
     if (readcnt < 0) {
         GLogger.LogErr(LOG_NOTICE, "read forward data error from %s",
-                fromClient ? "client" : "server");
+                isRequest ? "client" : "server");
         return -1;
     }
     else if (readcnt == 0) {
@@ -114,14 +127,14 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool fromClient) const
     }
 
     int writecnt;
-    if (encrypted) {
+    if (encrypted) { // 如果读端已经加密，则写端不加密，反之也是这样
         writecnt = write(tarfd, buf, readcnt);
     } else {
         writecnt = encrypter->Write(buf, readcnt);
     }
     if (writecnt != readcnt) {
         GLogger.LogErr(LOG_ERR, "write forward data to %s error",
-				fromClient ? "server" : "client");
+				isRequest ? "server" : "client");
         return -1;
 	}
 

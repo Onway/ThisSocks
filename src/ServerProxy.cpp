@@ -37,6 +37,12 @@ void ServerProxy::Process(int src, const char* request, int len) const
 {
 }
 
+/*
+ * 用户名密码验证
+ * 成功返回true，回复0
+ * 用户名或密码错误返回false，回复1
+ * 其他错误返回false，不发送回复
+ */
 bool ServerProxy::ValidateProxyClient() const
 {
     char buf[MAXBUF];

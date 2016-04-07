@@ -69,6 +69,10 @@ int ClientProxy::ConnectProxyServer() const
     return tarfd;
 }
 
+/*
+ * 发送用户名密码
+ * 格式：[用户名长度][用户名][密码长度][密码]
+ */
 bool ClientProxy::LoginProxyServer() const
 {
     char buf[MAXBUF];

@@ -33,7 +33,7 @@ protected:
     EncryptBase* encrypter;
 
 private:
-    int ForwardData(int srcfd, int tarfd, bool fromClient) const;
+    int ForwardData(int srcfd, int tarfd, bool isRequest) const;
 };
 
 #endif
