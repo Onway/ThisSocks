@@ -35,7 +35,7 @@ private:
     char randChar;
 };
 
-class Aes128Ecb : EncryptBase
+class Aes128Ecb : public EncryptBase
 {
 public:
 	bool SetServerFd(int fd);

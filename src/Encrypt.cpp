@@ -111,6 +111,7 @@ bool Aes128Ecb::SetClientFd(int fd)
 
 bool Aes128Ecb::SetServerFd(int fd)
 {
+	this->fd = fd;
 	char buf[256];
 	int readn = 0;
     if ((readn = read(this->fd, buf, sizeof(buf))) <= 0) {
@@ -204,5 +205,6 @@ void Aes128Ecb::InitAes(string pwd)
 // EncryptFactory implementation
 EncryptBase* EncryptFactory::GetEncrypter()
 {
-    return new SimpleEncrypter();
+    // return new SimpleEncrypter();
+	return new Aes128Ecb();
 }
