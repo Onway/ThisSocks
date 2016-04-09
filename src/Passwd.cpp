@@ -48,3 +48,9 @@ bool Passwd::IsValidUser(string user, string pwd)
 	map<string, string>::iterator iter = mp.find(user);
 	return iter != mp.end() && iter->second == pwd;
 }
+
+string Passwd::GetPassword(std::string user)
+{
+	map<string, string>::iterator iter = mp.find(user);
+	return iter == mp.end() ? "" : iter->second;
+}

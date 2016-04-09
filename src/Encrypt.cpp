@@ -1,9 +1,12 @@
 #include "Encrypt.h"
 #include "Logger.h"
 #include "Config.h"
+#include "Passwd.h"
 #include <ctime>
 #include <cstdlib>
+#include <math.h>
 
+#include <cryptopp/aes.h>  
 #include <cryptopp/filters.h>  
 #include <cryptopp/modes.h>  
 #include <cryptopp/pwdbased.h>
@@ -58,7 +61,7 @@ bool SimpleEncrypter::SetServerFd(int fd)
     return true;
 }
 
-ssize_t SimpleEncrypter::Read(void *buf, size_t len) const
+ssize_t SimpleEncrypter::Read(void *buf, size_t len)
 {
     char *rbuf = (char *)buf;
     ssize_t readn = read(this->fd, buf, len);
@@ -70,7 +73,7 @@ ssize_t SimpleEncrypter::Read(void *buf, size_t len) const
     return readn;
 }
 
-ssize_t SimpleEncrypter::Write(const void *buf, size_t len) const
+ssize_t SimpleEncrypter::Write(const void *buf, size_t len)
 {
     char *wbuf = new char[len]();
     char *rbuf = (char *)buf;
@@ -121,37 +124,65 @@ bool Aes128Ecb::SetServerFd(int fd)
 	}
 
 	string user(buf + 1, buf[0]);
+	string pwd = GPasswd.GetPassword(user);
+	if (pwd.size() == 0) {
+		GLogger.LogMsg(LOG_DEBUG, "invalid username");
+		return false;
+	}
+
+	InitAes(pwd);
     return true;
 }
 
-ssize_t Aes128Ecb::Read(void *buf, size_t len) const
+ssize_t Aes128Ecb::Read(void *buf, size_t len)
 {
-	return 0;
-	/*
-    char *rbuf = (char *)buf;
-    ssize_t readn = read(this->fd, buf, len);
-    if (readn > 0) {
-        for (ssize_t i = 0; i < readn; ++i) {
-            rbuf[i] -= this->randChar;
-        }
-    }
-    return readn;
-	*/
+	char clen[2];
+	ssize_t readn = 0;
+	if ((readn = read(this->fd, clen, sizeof(clen))) <= 0) {
+		return readn;
+	} else if (readn != sizeof(clen)) {
+		return -1;
+	}
+	short slen = *(short*)clen;
+
+	char *rbuf = new char[slen];
+	if (read(this->fd, rbuf, slen) != slen) {
+		return -1;
+	}
+
+	string plain;
+	CryptoPP::StringSource ss1((const byte*)rbuf, slen, true, 
+        new CryptoPP::StreamTransformationFilter(d,
+            new CryptoPP::StringSink(plain)
+        ) 
+    ); 
+
+	size_t rlen = std::min(plain.size(), len);
+	strncpy((char*)buf, plain.data(), rlen);
+	delete[] rbuf;
+	return rlen;
 }
 
-ssize_t Aes128Ecb::Write(const void *buf, size_t len) const
+ssize_t Aes128Ecb::Write(const void *buf, size_t len)
 {
-	return 0;
-	/*
-    char *wbuf = new char[len]();
-    char *rbuf = (char *)buf;
-    for (size_t i = 0; i < len; ++i) {
-        wbuf[i] = rbuf[i] + this->randChar;
-    }
-    ssize_t ret = write(this->fd, wbuf, len);
+	string cipher;
+	CryptoPP::StringSource ss((const byte*)buf, len, true, 
+        new CryptoPP::StreamTransformationFilter(e,
+            new CryptoPP::StringSink(cipher)
+        ) 
+    ); 
+
+	short slen = (short)cipher.size();
+	char* wbuf = new char[slen + 2]();
+	strncpy(wbuf, (const char*)&slen, 2);
+	strncpy(wbuf + 2, cipher.data(), slen);
+
+    ssize_t ret = write(this->fd, wbuf, slen + 2);
     delete[] wbuf;
-    return ret;
-	*/
+	if (ret != 0) {
+		return ret == slen + 2 ? len : -1;
+	}
+	return 0;
 }
 
 Aes128Ecb* Aes128Ecb::clone() const
