@@ -2,6 +2,8 @@
 #define ENCRYPT_H
 
 #include <unistd.h>
+#include <cryptopp/aes.h>
+#include <cryptopp/modes.h>  
 
 class EncryptBase
 {
@@ -31,6 +33,23 @@ public:
 
 private:
     char randChar;
+};
+
+class Aes128Ecb : EncryptBase
+{
+public:
+	bool SetServerFd(int fd);
+	bool SetClientFd(int fd);
+	ssize_t Read(void *buf, size_t len) const;
+	ssize_t Write(const void *buf, size_t len) const;
+	Aes128Ecb* clone() const;
+
+private:
+	void InitAes(std::string pwd);
+	CryptoPP::ECB_Mode<CryptoPP::AES>::Encryption e;
+	CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
+
+	static const int iterations = 100;
 };
 
 class EncryptFactory

@@ -25,7 +25,7 @@ set(SRCS
 	src/ClientProxy.cpp
 )
 add_executable(ThisSocks ${SRCS} src/main.cpp)
-target_link_libraries(ThisSocks pthread)
+target_link_libraries(ThisSocks pthread cryptopp)
 
 set(CMAKE_INSTALL_PREFIX /usr/local)
 install(PROGRAMS ${PROJECT_BINARY_DIR}/ThisSocks DESTINATION bin)
