@@ -6,9 +6,7 @@
 #include <cstdlib>
 #include <math.h>
 
-#include <cryptopp/aes.h>  
 #include <cryptopp/filters.h>  
-#include <cryptopp/modes.h>  
 #include <cryptopp/pwdbased.h>
 #include <cryptopp/sha.h>
 
@@ -99,9 +97,9 @@ bool Aes128Ecb::SetClientFd(int fd)
 	string pwd = GConfig.Password;
 
 	buf[0] = user.size();
-	strncpy(buf + 1, user.c_str(), buf[0]);
+	memcpy(buf + 1, user.data(), buf[0]);
     if (write(this->fd, buf, buf[0] + 1) != buf[0] + 1) {
-        GLogger.LogErr(LOG_DEBUG, "SetClientFd error");
+        GLogger.LogMsg(LOG_DEBUG, "SetClientFd error");
         return false;
     }
 
@@ -113,15 +111,14 @@ bool Aes128Ecb::SetServerFd(int fd)
 {
 	this->fd = fd;
 	char buf[256];
-	int readn = 0;
-    if ((readn = read(this->fd, buf, sizeof(buf))) <= 0) {
-        GLogger.LogErr(LOG_DEBUG, "SetServerFd error");
+    if (read(this->fd, buf, 1) <= 0) {
+        GLogger.LogMsg(LOG_DEBUG, "SetServerFd recv length error");
         return false;
 	}
 
-	if (buf[0] + 1 != readn) {
-		GLogger.LogMsg(LOG_DEBUG, "SetServerFd length invalid");
-		return false;
+	if (read(this->fd, buf + 1, buf[0]) != buf[0]) {
+        GLogger.LogMsg(LOG_DEBUG, "SetServerFd recv username error");
+        return false;
 	}
 
 	string user(buf + 1, buf[0]);
@@ -148,18 +145,25 @@ ssize_t Aes128Ecb::Read(void *buf, size_t len)
 
 	char *rbuf = new char[slen];
 	if (read(this->fd, rbuf, slen) != slen) {
+		delete[] rbuf;
 		return -1;
 	}
 
 	string plain;
-	CryptoPP::StringSource ss1((const byte*)rbuf, slen, true, 
-        new CryptoPP::StreamTransformationFilter(d,
-            new CryptoPP::StringSink(plain)
-        ) 
-    ); 
+	try {
+		CryptoPP::StringSource ss((const byte*)rbuf, slen, true, 
+			new CryptoPP::StreamTransformationFilter(d,
+				new CryptoPP::StringSink(plain)
+			) 
+		); 
+	} catch (CryptoPP::Exception& ex) {
+		delete[] rbuf;
+		GLogger.LogMsg(LOG_ERR, ex.what());
+		return -1;
+	}
 
 	size_t rlen = std::min(plain.size(), len);
-	strncpy((char*)buf, plain.data(), rlen);
+	memcpy(buf, plain.data(), rlen);
 	delete[] rbuf;
 	return rlen;
 }
@@ -167,18 +171,23 @@ ssize_t Aes128Ecb::Read(void *buf, size_t len)
 ssize_t Aes128Ecb::Write(const void *buf, size_t len)
 {
 	string cipher;
-	CryptoPP::StringSource ss((const byte*)buf, len, true, 
-        new CryptoPP::StreamTransformationFilter(e,
-            new CryptoPP::StringSink(cipher)
-        ) 
-    ); 
+	try {
+		CryptoPP::StringSource ss((const byte*)buf, len, true, 
+			new CryptoPP::StreamTransformationFilter(e,
+				new CryptoPP::StringSink(cipher)
+			) 
+		); 
+	} catch (CryptoPP::Exception& ex) {
+		GLogger.LogMsg(LOG_ERR, ex.what());
+		return -1;
+	}
 
 	short slen = (short)cipher.size();
 	char* wbuf = new char[slen + 2]();
-	strncpy(wbuf, (const char*)&slen, 2);
-	strncpy(wbuf + 2, cipher.data(), slen);
-
+	memcpy(wbuf, &slen, 2);
+	memcpy(wbuf + 2, cipher.data(), slen);
     ssize_t ret = write(this->fd, wbuf, slen + 2);
+
     delete[] wbuf;
 	if (ret != 0) {
 		return ret == slen + 2 ? len : -1;
