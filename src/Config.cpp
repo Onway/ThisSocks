@@ -165,10 +165,11 @@ bool Config::CheckOptions() const
 
 void Config::PrintUsage() const
 {
-	cout << "ThisSocks v2.2" << endl;
+	cout << "ThisSocks v2.3" << endl;
 	cout << endl;
 	cout << "Usage: ThisSocks [-D] <-C FILE>" << endl;
 	cout << "       ThisSocks -h" << endl;
+	cout << endl;
 	cout << "    -C FILE        path to config file" << endl;
 	cout << "    -D             debug mode" << endl;
 	cout << "    -h             show this usage and exit" << endl;

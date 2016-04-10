@@ -6,9 +6,11 @@
 #include <cstdlib>
 #include <math.h>
 
+#ifdef USE_CRYPTOPP
 #include <cryptopp/filters.h>  
 #include <cryptopp/pwdbased.h>
 #include <cryptopp/sha.h>
+#endif
 
 using std::string;
 
@@ -88,6 +90,7 @@ SimpleEncrypter* SimpleEncrypter::clone() const
 	return new SimpleEncrypter(*this);
 }
 
+#ifdef USE_CRYPTOPP
 // Aes128Ecb implementation
 bool Aes128Ecb::SetClientFd(int fd)
 {
@@ -210,10 +213,11 @@ void Aes128Ecb::InitAes(string pwd)
     e.SetKey(key, key.size());
 	d.SetKey(key, key.size());
 }
+#endif
 
 // EncryptFactory implementation
 EncryptBase* EncryptFactory::GetEncrypter()
 {
-    // return new SimpleEncrypter();
-	return new Aes128Ecb();
+    return new SimpleEncrypter();
+	// return new Aes128Ecb();
 }

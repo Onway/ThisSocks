@@ -2,8 +2,10 @@
 #define ENCRYPT_H
 
 #include <unistd.h>
+#ifdef USE_CRYPTOPP
 #include <cryptopp/aes.h>
 #include <cryptopp/modes.h>  
+#endif
 
 class EncryptBase
 {
@@ -35,6 +37,7 @@ private:
     char randChar;
 };
 
+#ifdef USE_CRYPTOPP
 class Aes128Ecb : public EncryptBase
 {
 public:
@@ -51,6 +54,7 @@ private:
 
 	static const int iterations = 100;
 };
+#endif
 
 class EncryptFactory
 {
