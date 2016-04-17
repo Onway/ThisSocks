@@ -3,11 +3,13 @@
 #include "HttpsProxy.h"
 #include "SocksProxy.h"
 #include "Logger.h"
+#include "Counter.h"
 
 using std::string;
 
 void ServerProxy::Process(int srcfd)
 {
+	Counter::CreateKey();
 	encrypter = GEncryptFactory.GetEncrypter();
 	if (!encrypter->SetServerFd(srcfd)) {
 		return;
@@ -72,6 +74,7 @@ bool ServerProxy::ValidateProxyClient() const
 
     char res[2];
     if (GPasswd.IsValidUser(username, passwd)) {
+		Counter::RecordUser(username);
         res[0] = 0;
         if (1 != encrypter->Write(res, 1)) {
             GLogger.LogErr(LOG_ERR, "write auth result error");
@@ -105,6 +108,7 @@ int ServerProxy::ConnectRealServer(uint32_t ip, uint16_t port) const
         GLogger.LogErr(LOG_ERR, "connect() to real server error");
         return -1;
     }
+	Counter::RecordAddress(ip, port);
 
     return remotefd;
 }

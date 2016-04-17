@@ -7,6 +7,7 @@
 #include "Logger.h"
 #include "Utils.h"
 #include "Encrypt.h"
+#include "Counter.h"
 
 using namespace std;
 
@@ -110,6 +111,7 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
     bool encrypted = (GConfig.RunAsClient && !isRequest) // 客户端收到回复
         || (!GConfig.RunAsClient && isRequest); // 服务器收到请求
 
+	// 读数据
     char buf[MAXBUF];
     int readcnt;
     if (encrypted) {
@@ -121,11 +123,16 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
         GLogger.LogErr(LOG_NOTICE, "read forward data error from %s",
                 isRequest ? "client" : "server");
         return -1;
-    }
-    else if (readcnt == 0) {
+    } else if (readcnt == 0) {
         return 0;
     }
 
+	// 服务端收到回复，记录下载字节
+	if (!GConfig.RunAsClient && !isRequest) {
+		Counter::RecordDownload(readcnt);
+	}
+
+	// 写数据
     int writecnt;
     if (encrypted) { // 如果读端已经加密，则写端不加密，反之也是这样
         writecnt = write(tarfd, buf, readcnt);
@@ -136,6 +143,11 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
         GLogger.LogErr(LOG_ERR, "write forward data to %s error",
 				isRequest ? "server" : "client");
         return -1;
+	}
+
+	// 服务端转发请求，记录上传字节
+	if (!GConfig.RunAsClient && isRequest) {
+		Counter::RecordUpload(writecnt);
 	}
 
     return 1;
