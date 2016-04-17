@@ -4,6 +4,19 @@
 #include <string>
 #include <pthread.h>
 
+class ThreadInfo
+{
+public:
+	std::string User;
+	unsigned int IP;
+	unsigned int Port;
+	unsigned int Upload;
+	unsigned int Download;
+
+	ThreadInfo();
+	void Print();
+};
+
 class Counter
 {
 public:
@@ -14,6 +27,9 @@ public:
 	static void RecordDownload(unsigned int size);
 
 private:
+	static void InitThread();
+	static ThreadInfo* GetThreadInfo();
+	static void DeleteKey(void* arg);
 	static pthread_key_t pkey;
 	static pthread_once_t once;
 };
