@@ -8,10 +8,12 @@ class Config
 public:
 	int ServerPort;		
 	int LocalPort;
+	int StatPort;
 	bool RunAsClient;
 	bool RunAsDaemon;
 	std::string ServerAddress;
 	std::string LocalAddress;
+	std::string StatAddress;
 	std::string CfgFile;
 	std::string PwdFile;
 	std::string Username;

@@ -32,6 +32,7 @@ public:
 private:
 	static void InitThread();
 	static ThreadInfo* GetThreadInfo();
+	static bool IsNeedRecord();
 	static void DeleteKey(void* arg);
 	static void RecordSTime();
 	static void RecordETime(ThreadInfo* info);

@@ -1,5 +1,6 @@
 #include "Counter.h"
 #include "Logger.h"
+#include "Config.h"
 
 pthread_key_t Counter::pkey;
 
@@ -7,6 +8,10 @@ pthread_once_t Counter::once = PTHREAD_ONCE_INIT;
 
 void Counter::CreateKey()
 {
+	if (!IsNeedRecord()) {
+		return;
+	}
+
 	pthread_once(&once, InitThread);
 	RecordSTime();
 }
@@ -39,14 +44,27 @@ ThreadInfo* Counter::GetThreadInfo()
 	return info;
 }
 
+bool Counter::IsNeedRecord()
+{
+	return !GConfig.StatAddress.empty() && GConfig.StatPort != 0;
+}
+
 void Counter::RecordUser(std::string user)
 {
+	if (!IsNeedRecord()) {
+		return;
+	}
+
 	ThreadInfo* info = GetThreadInfo();
 	info->User = user;
 }
 
 void Counter::RecordAddress(unsigned int ip, unsigned short port)
 {
+	if (!IsNeedRecord()) {
+		return;
+	}
+
 	ThreadInfo* info = GetThreadInfo();
 	info->IP = ip;
 	info->Port = port;
@@ -54,12 +72,20 @@ void Counter::RecordAddress(unsigned int ip, unsigned short port)
 
 void Counter::RecordUpload(unsigned int size)
 {
+	if (!IsNeedRecord()) {
+		return;
+	}
+
 	ThreadInfo* info = GetThreadInfo();
 	info->Upload += size;
 }
 
 void Counter::RecordDownload(unsigned int size)
 {
+	if (!IsNeedRecord()) {
+		return;
+	}
+
 	ThreadInfo* info = GetThreadInfo();
 	info->Download += size;
 }
