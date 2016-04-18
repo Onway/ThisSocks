@@ -3,11 +3,14 @@
 
 #include <string>
 #include <pthread.h>
+#include <sys/time.h>
 
 class ThreadInfo
 {
 public:
 	std::string User;
+	struct timeval STime;
+	struct timeval ETime;
 	unsigned int IP;
 	unsigned int Port;
 	unsigned int Upload;
@@ -30,6 +33,9 @@ private:
 	static void InitThread();
 	static ThreadInfo* GetThreadInfo();
 	static void DeleteKey(void* arg);
+	static void RecordSTime();
+	static void RecordETime(ThreadInfo* info);
+
 	static pthread_key_t pkey;
 	static pthread_once_t once;
 };

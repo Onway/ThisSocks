@@ -8,6 +8,7 @@ pthread_once_t Counter::once = PTHREAD_ONCE_INIT;
 void Counter::CreateKey()
 {
 	pthread_once(&once, InitThread);
+	RecordSTime();
 }
 
 void Counter::InitThread()
@@ -19,7 +20,9 @@ void Counter::DeleteKey(void* arg)
 {
 	if (arg != NULL) {
 		ThreadInfo* info = (ThreadInfo*)arg;
+		RecordETime(info);
 		info->Print();
+
 		delete info;
 		info = NULL;
 		arg = NULL;
@@ -61,6 +64,17 @@ void Counter::RecordDownload(unsigned int size)
 	info->Download += size;
 }
 
+void Counter::RecordSTime()
+{
+	ThreadInfo* info = GetThreadInfo();
+	gettimeofday(&info->STime, NULL);
+}
+
+void Counter::RecordETime(ThreadInfo* info)
+{
+	gettimeofday(&info->ETime, NULL);
+}
+
 ThreadInfo::ThreadInfo()
 	: IP(0), Port(0), Upload(0), Download(0)
 {
@@ -70,10 +84,16 @@ void ThreadInfo::Print()
 {
 	GLogger.LogMsg(
 			LOG_DEBUG,
+			"\nSTime: %ld.%ld"
+			"\nETime: %ld.%ld"
 			"\nUser: %s"
 		   	"\nConnect: %u,%u"
 		    "\nUpload: %u"
 		   	"\nDonwload: %u"
 			"\n",
-			User.c_str(), IP, Port, Upload, Download);
+			STime.tv_sec, STime.tv_usec,
+			ETime.tv_sec, ETime.tv_usec,
+			User.c_str(),
+			IP, Port,
+			Upload, Download);
 }
