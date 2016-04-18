@@ -70,6 +70,10 @@ void ThreadInfo::Print()
 {
 	GLogger.LogMsg(
 			LOG_DEBUG,
-			"user %s from %u:%u upload %u bytes, donwload %u bytes",
+			"\nUser: %s"
+		   	"\nConnect: %u,%u"
+		    "\nUpload: %u"
+		   	"\nDonwload: %u"
+			"\n",
 			User.c_str(), IP, Port, Upload, Download);
 }
