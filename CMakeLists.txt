@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/inc
-	${PROJECT_SOURCE_DIR}/gtest/include
+	${PROJECT_SOURCE_DIR}/test/include
 )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -56,12 +56,12 @@ install(
 
 execute_process(
 	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
-	COMMAND cp -u ${PROJECT_SOURCE_DIR}/gtest/curl.bash ${PROJECT_BINARY_DIR}
+	COMMAND cp -u ${PROJECT_SOURCE_DIR}/test/curl.bash ${PROJECT_BINARY_DIR}
 )
 
 if (BUILD_UNIT_TEST)
 	link_directories(
-		${PROJECT_SOURCE_DIR}/gtest
+		${PROJECT_SOURCE_DIR}/test
 	)
 	set(LIBS
 		gtest_main
@@ -69,15 +69,15 @@ if (BUILD_UNIT_TEST)
 		pthread
 	)
 	execute_process(
-		COMMAND cp -ur ${PROJECT_SOURCE_DIR}/gtest/test_conf ${PROJECT_BINARY_DIR}
+		COMMAND cp -ur ${PROJECT_SOURCE_DIR}/test/test_conf ${PROJECT_BINARY_DIR}
 	)
 
-	add_executable(TestConfig ${SRCS} gtest/ConfigTest.cpp)
+	add_executable(TestConfig ${SRCS} test/ConfigTest.cpp)
 	target_link_libraries(TestConfig ${LIBS})
 
-	add_executable(TestPasswd ${SRCS} gtest/PasswdTest.cpp)
+	add_executable(TestPasswd ${SRCS} test/PasswdTest.cpp)
 	target_link_libraries(TestPasswd ${LIBS})
 
-	add_executable(TestUtils ${SRCS} gtest/UtilsTest.cpp)
+	add_executable(TestUtils ${SRCS} test/UtilsTest.cpp)
 	target_link_libraries(TestUtils ${LIBS})
 endif()
