@@ -4,6 +4,9 @@
 #include <string>
 #include <pthread.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 class ThreadInfo
 {
@@ -18,6 +21,12 @@ public:
 
 	ThreadInfo();
 	void Print();
+	void Print(const struct sockaddr_in& udpaddr);
+
+private:
+	size_t ConvertToBytes(unsigned char* buf);
+	size_t UShortToBytes(unsigned char* buf, unsigned short val);
+	size_t UIntToBytes(unsigned char* buf, unsigned int val);
 };
 
 class Counter
@@ -39,6 +48,7 @@ private:
 
 	static pthread_key_t pkey;
 	static pthread_once_t once;
+	static struct sockaddr_in udpaddr;
 };
 
 #endif // COUNTER_H
