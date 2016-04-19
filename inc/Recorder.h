@@ -1,5 +1,5 @@
-#ifndef COUNTER_H
-#define COUNTER_H
+#ifndef RECORDER_H
+#define RECORDER_H
 
 #include <string>
 #include <pthread.h>
@@ -51,4 +51,4 @@ private:
 	static struct sockaddr_in udpaddr;
 };
 
-#endif // COUNTER_H
+#endif // RECORDER_H

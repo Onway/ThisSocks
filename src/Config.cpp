@@ -11,7 +11,7 @@ using namespace std;
 Config GConfig;
 
 Config::Config()
-    : ServerPort(0), LocalPort(0), StatPort(0),
+    : ServerPort(0), LocalPort(0), RecordPort(0),
 	RunAsClient(false), RunAsDaemon(false),
 	_D(false)
 {
@@ -107,10 +107,10 @@ bool Config::ParseOption(const string &key, const string &value)
 		LocalAddress = value;
 	} else if (key == "LocalPort") {
 		LocalPort = atoi(value.c_str());
-	} else if (key == "StatAddress") {
-		StatAddress = value;
-	} else if (key == "StatPort") {
-		StatPort = atoi(value.c_str());
+	} else if (key == "RecordAddress") {
+		RecordAddress = value;
+	} else if (key == "RecordPort") {
+		RecordPort = atoi(value.c_str());
 	} else if (key == "PwdFile") {
 		string dir = Utils::GetAbsDir(CfgFile);
 		PwdFile = Utils::JoinPath(dir, value);

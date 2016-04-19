@@ -3,7 +3,7 @@
 #include "HttpsProxy.h"
 #include "SocksProxy.h"
 #include "Logger.h"
-#include "Counter.h"
+#include "Recorder.h"
 
 using std::string;
 

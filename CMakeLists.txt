@@ -17,7 +17,7 @@ set(SRCS
 	src/Encrypt.cpp
 	src/Config.cpp
 	src/Passwd.cpp
-	src/Counter.cpp
+    src/Recorder.cpp
 	src/TcpServer.cpp
 	src/Proxy.cpp
 	src/ServerProxy.cpp

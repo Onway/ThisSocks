@@ -1,4 +1,4 @@
-#include "Counter.h"
+#include "Recorder.h"
 #include "Logger.h"
 #include "Config.h"
 #include <cstring>
@@ -26,9 +26,9 @@ void Counter::InitThread()
 
 	memset(&udpaddr, 0, sizeof(udpaddr));
 	udpaddr.sin_family = AF_INET;
-	udpaddr.sin_port = htons(GConfig.StatPort);
-	if (inet_pton(AF_INET, GConfig.StatAddress.c_str(), &udpaddr.sin_addr) <= 0) {
-		GLogger.LogErr(LOG_ERR, "inet_pton StatAddress error");
+	udpaddr.sin_port = htons(GConfig.RecordPort);
+	if (inet_pton(AF_INET, GConfig.RecordAddress.c_str(), &udpaddr.sin_addr) <= 0) {
+		GLogger.LogErr(LOG_ERR, "inet_pton RecordAddress error");
 		exit(-1);
 	}
 }
@@ -59,7 +59,7 @@ ThreadInfo* Counter::GetThreadInfo()
 
 bool Counter::IsNeedRecord()
 {
-	return !GConfig.StatAddress.empty() && GConfig.StatPort != 0;
+	return !GConfig.RecordAddress.empty() && GConfig.RecordPort != 0;
 }
 
 void Counter::RecordUser(std::string user)
