@@ -4,13 +4,13 @@
 #include <cstring>
 #include <cstdlib>
 
-struct sockaddr_in Counter::udpaddr;
+struct sockaddr_in Recorder::udpaddr;
 
-pthread_key_t Counter::pkey;
+pthread_key_t Recorder::pkey;
 
-pthread_once_t Counter::once = PTHREAD_ONCE_INIT;
+pthread_once_t Recorder::once = PTHREAD_ONCE_INIT;
 
-void Counter::CreateKey()
+void Recorder::CreateKey()
 {
 	if (!IsNeedRecord()) {
 		return;
@@ -20,7 +20,7 @@ void Counter::CreateKey()
 	RecordSTime();
 }
 
-void Counter::InitThread()
+void Recorder::InitThread()
 {
 	pthread_key_create(&pkey, DeleteKey);
 
@@ -33,10 +33,10 @@ void Counter::InitThread()
 	}
 }
 
-void Counter::DeleteKey(void* arg)
+void Recorder::DeleteKey(void* arg)
 {
 	if (arg != NULL) {
-		ThreadInfo* info = (ThreadInfo*)arg;
+		RecordInfo* info = (RecordInfo*)arg;
 		RecordETime(info);
 		info->Print();
 		info->Print(udpaddr);
@@ -47,79 +47,79 @@ void Counter::DeleteKey(void* arg)
 	}
 }
 
-ThreadInfo* Counter::GetThreadInfo()
+RecordInfo* Recorder::GetRecordInfo()
 {
-	ThreadInfo* info = (ThreadInfo*)pthread_getspecific(pkey);
+	RecordInfo* info = (RecordInfo*)pthread_getspecific(pkey);
 	if (info == NULL) {
-		info = new ThreadInfo();
+		info = new RecordInfo();
 		pthread_setspecific(pkey, info);
 	}
 	return info;
 }
 
-bool Counter::IsNeedRecord()
+bool Recorder::IsNeedRecord()
 {
 	return !GConfig.RecordAddress.empty() && GConfig.RecordPort != 0;
 }
 
-void Counter::RecordUser(std::string user)
+void Recorder::RecordUser(std::string user)
 {
 	if (!IsNeedRecord()) {
 		return;
 	}
 
-	ThreadInfo* info = GetThreadInfo();
+	RecordInfo* info = GetRecordInfo();
 	info->User = user;
 }
 
-void Counter::RecordAddress(unsigned int ip, unsigned short port)
+void Recorder::RecordAddress(unsigned int ip, unsigned short port)
 {
 	if (!IsNeedRecord()) {
 		return;
 	}
 
-	ThreadInfo* info = GetThreadInfo();
+	RecordInfo* info = GetRecordInfo();
 	info->IP = ip;
 	info->Port = port;
 }
 
-void Counter::RecordUpload(unsigned int size)
+void Recorder::RecordUpload(unsigned int size)
 {
 	if (!IsNeedRecord()) {
 		return;
 	}
 
-	ThreadInfo* info = GetThreadInfo();
+	RecordInfo* info = GetRecordInfo();
 	info->Upload += size;
 }
 
-void Counter::RecordDownload(unsigned int size)
+void Recorder::RecordDownload(unsigned int size)
 {
 	if (!IsNeedRecord()) {
 		return;
 	}
 
-	ThreadInfo* info = GetThreadInfo();
+	RecordInfo* info = GetRecordInfo();
 	info->Download += size;
 }
 
-void Counter::RecordSTime()
+void Recorder::RecordSTime()
 {
-	ThreadInfo* info = GetThreadInfo();
+	RecordInfo* info = GetRecordInfo();
 	gettimeofday(&info->STime, NULL);
 }
 
-void Counter::RecordETime(ThreadInfo* info)
+void Recorder::RecordETime(RecordInfo* info)
 {
 	gettimeofday(&info->ETime, NULL);
 }
 
-ThreadInfo::ThreadInfo()
+RecordInfo::RecordInfo()
 	: IP(0), Port(0), Upload(0), Download(0)
 {
 }
 
-void ThreadInfo::Print()
+void RecordInfo::Print()
 {
 	GLogger.LogMsg(
 			LOG_DEBUG,
@@ -137,7 +137,7 @@ void ThreadInfo::Print()
 			Upload, Download);
 }
 
-void ThreadInfo::Print(const struct sockaddr_in& udpaddr)
+void RecordInfo::Print(const struct sockaddr_in& udpaddr)
 {
 	unsigned char buf[512];
 	size_t len = ConvertToBytes(buf);
@@ -152,7 +152,7 @@ void ThreadInfo::Print(const struct sockaddr_in& udpaddr)
 			(struct sockaddr*)&udpaddr, sizeof(udpaddr));
 }
 
-size_t ThreadInfo::ConvertToBytes(unsigned char* buf)
+size_t RecordInfo::ConvertToBytes(unsigned char* buf)
 {
 	size_t offset = 0;
 
@@ -172,13 +172,13 @@ size_t ThreadInfo::ConvertToBytes(unsigned char* buf)
 	return offset;
 }
 
-size_t ThreadInfo::UShortToBytes(unsigned char* buf, unsigned short val)
+size_t RecordInfo::UShortToBytes(unsigned char* buf, unsigned short val)
 {
 	memcpy(buf, &val, sizeof(val));
 	return sizeof(val);
 }
 
-size_t ThreadInfo::UIntToBytes(unsigned char* buf, unsigned int val)
+size_t RecordInfo::UIntToBytes(unsigned char* buf, unsigned int val)
 {
 	memcpy(buf, &val, sizeof(val));
 	return sizeof(val);

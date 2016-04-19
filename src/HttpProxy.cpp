@@ -33,7 +33,7 @@ void HttpServerProxy::Process(int srcfd, const char *request, int len) const
 			break;
 		}
 
-		Counter::RecordUpload(len);
+		Recorder::RecordUpload(len);
 		ForwardData(srcfd, remotefd);
 	} while (0);
 

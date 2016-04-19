@@ -129,7 +129,7 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
 
 	// 服务端收到回复，记录下载字节
 	if (!GConfig.RunAsClient && !isRequest) {
-		Counter::RecordDownload(readcnt);
+		Recorder::RecordDownload(readcnt);
 	}
 
 	// 写数据
@@ -147,7 +147,7 @@ int Proxy::ForwardData(int srcfd, int tarfd, bool isRequest) const
 
 	// 服务端转发请求，记录上传字节
 	if (!GConfig.RunAsClient && isRequest) {
-		Counter::RecordUpload(writecnt);
+		Recorder::RecordUpload(writecnt);
 	}
 
     return 1;

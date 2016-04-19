@@ -8,7 +8,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-class ThreadInfo
+class RecordInfo
 {
 public:
 	std::string User;
@@ -19,7 +19,7 @@ public:
 	unsigned int Upload;
 	unsigned int Download;
 
-	ThreadInfo();
+	RecordInfo();
 	void Print();
 	void Print(const struct sockaddr_in& udpaddr);
 
@@ -29,7 +29,7 @@ private:
 	size_t UIntToBytes(unsigned char* buf, unsigned int val);
 };
 
-class Counter
+class Recorder
 {
 public:
 	static void CreateKey();
@@ -40,11 +40,11 @@ public:
 
 private:
 	static void InitThread();
-	static ThreadInfo* GetThreadInfo();
+	static RecordInfo* GetRecordInfo();
 	static bool IsNeedRecord();
 	static void DeleteKey(void* arg);
 	static void RecordSTime();
-	static void RecordETime(ThreadInfo* info);
+	static void RecordETime(RecordInfo* info);
 
 	static pthread_key_t pkey;
 	static pthread_once_t once;
