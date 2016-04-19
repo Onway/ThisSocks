@@ -38,7 +38,7 @@ void Recorder::DeleteKey(void* arg)
 	if (arg != NULL) {
 		RecordInfo* info = (RecordInfo*)arg;
 		RecordETime(info);
-		info->Print();
+		// info->Print();
 		info->Print(udpaddr);
 
 		delete info;
