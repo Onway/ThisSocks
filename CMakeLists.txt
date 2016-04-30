@@ -1,4 +1,3 @@
-option(BUILD_UNIT_TEST "build unit test" OFF)
 option(USE_CRYPTOPP "use libcrypto++" OFF)
 
 project(ThisSocks)
@@ -66,26 +65,3 @@ execute_process(
 	COMMAND cp ${CP_DIR} ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
 	COMMAND cp ${CP_FILE} ${PROJECT_SOURCE_DIR}/test/curl.bash ${PROJECT_BINARY_DIR}
 )
-
-if (BUILD_UNIT_TEST)
-	link_directories(
-		${PROJECT_SOURCE_DIR}/test
-	)
-	set(LIBS
-		gtest_main
-		gtest
-		pthread
-	)
-	execute_process(
-		COMMAND cp ${CP_DIR} ${PROJECT_SOURCE_DIR}/test/test_conf ${PROJECT_BINARY_DIR}
-	)
-
-	add_executable(TestConfig ${SRCS} test/ConfigTest.cpp)
-	target_link_libraries(TestConfig ${LIBS})
-
-	add_executable(TestPasswd ${SRCS} test/PasswdTest.cpp)
-	target_link_libraries(TestPasswd ${LIBS})
-
-	add_executable(TestUtils ${SRCS} test/UtilsTest.cpp)
-	target_link_libraries(TestUtils ${LIBS})
-endif()
