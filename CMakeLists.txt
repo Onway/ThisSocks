@@ -54,9 +54,17 @@ install(
 	/etc/ThisSocks
 )
 
+if (APPLE)
+    set(CP_FILE -f)
+    set(CP_DIR -fR)
+else()
+    set(CP_FILE -u)
+    set(CP_DIR -ur)
+endif()
+
 execute_process(
-	COMMAND cp -ur ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
-	COMMAND cp -u ${PROJECT_SOURCE_DIR}/test/curl.bash ${PROJECT_BINARY_DIR}
+	COMMAND cp ${CP_DIR} ${PROJECT_SOURCE_DIR}/conf ${PROJECT_BINARY_DIR}
+	COMMAND cp ${CP_FILE} ${PROJECT_SOURCE_DIR}/test/curl.bash ${PROJECT_BINARY_DIR}
 )
 
 if (BUILD_UNIT_TEST)
@@ -69,7 +77,7 @@ if (BUILD_UNIT_TEST)
 		pthread
 	)
 	execute_process(
-		COMMAND cp -ur ${PROJECT_SOURCE_DIR}/test/test_conf ${PROJECT_BINARY_DIR}
+		COMMAND cp ${CP_DIR} ${PROJECT_SOURCE_DIR}/test/test_conf ${PROJECT_BINARY_DIR}
 	)
 
 	add_executable(TestConfig ${SRCS} test/ConfigTest.cpp)
