@@ -35,15 +35,6 @@ endif()
 set(CMAKE_INSTALL_PREFIX /usr/local)
 install(PROGRAMS ${PROJECT_BINARY_DIR}/ThisSocks DESTINATION bin)
 install(
-	PROGRAMS
-	script/ThisSocks
-	script/ThisSocks_C
-	script/ThisSocks_S
-
-	DESTINATION
-	/etc/init.d
-)
-install(
 	FILES
 	conf/client.conf
 	conf/server.conf
@@ -52,6 +43,17 @@ install(
 	DESTINATION
 	/etc/ThisSocks
 )
+if (NOT APPLE)
+	install(
+		PROGRAMS
+		script/ThisSocks
+		script/ThisSocks_C
+		script/ThisSocks_S
+
+		DESTINATION
+		/etc/init.d
+	)
+endif()
 
 if (APPLE)
     set(CP_FILE -f)
