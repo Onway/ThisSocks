@@ -59,12 +59,7 @@ bool HttpsServerProxy::ParseIpPort(string &domain, uint32_t &ip, uint16_t &port)
         return false;
     }
 
-    struct hostent *hptr = gethostbyname(part[0].c_str());
-    if (hptr == NULL) {
-        GLogger.LogErr(LOG_ERR, "gethostname error");
-        return false;
-    }
-    ip = *((uint32_t *)*hptr->h_addr_list);
+	ip = GetIPv4ByName(part[0]);
     port = atoi(part[1].c_str());
 
     return true;

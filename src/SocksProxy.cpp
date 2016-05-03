@@ -44,12 +44,7 @@ void SocksServerProxy::Process(int srcfd, const char*, int) const
         port = *((uint16_t *)&buf[readn - 2]);
 
         buf[5 + hostlen] = 0;
-        struct hostent *hptr = gethostbyname(buf + 5);
-        if (hptr == NULL) {
-            GLogger.LogErr(LOG_ERR, "gethostname error");
-            return;
-        }
-        ip = *((uint32_t *)*hptr->h_addr_list);
+		ip = GetIPv4ByName(buf + 5);
     } else {
 		GLogger.LogMsg(LOG_NOTICE, "unsupported socks address type");
 		return;

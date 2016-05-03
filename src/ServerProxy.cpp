@@ -123,3 +123,24 @@ ServerProxy* ServerProxy::SelectServerProxy(const char *request, int len) const
 	}
 	return new HttpServerProxy();
 }
+
+uint32_t ServerProxy::GetIPv4ByName(string hostname) const
+{
+	struct addrinfo hints;
+	struct addrinfo* result;
+
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	int ret = 0;
+	if ((ret = getaddrinfo(hostname.c_str(), NULL, &hints, &result)) != 0)  {
+		GLogger.LogMsg(LOG_ERR, "getaddrinfo error: %s", gai_strerror(ret));
+		return -1;
+	}
+
+	uint32_t ip = ((struct sockaddr_in*)result->ai_addr)->sin_addr.s_addr;
+	freeaddrinfo(result);
+	return ip;
+}
