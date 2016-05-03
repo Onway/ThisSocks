@@ -41,7 +41,7 @@ void HttpsServerProxy::Process(int srcfd, const char *request, int len) const
 		int reslen = resstr.size();
 		if (reslen != encrypter->Write(resstr.c_str(), reslen)) {
 			GLogger.LogErr(LOG_ERR, "write 200 response error");
-			return;
+			break;
 		}
 
 		ForwardData(srcfd, remotefd);
