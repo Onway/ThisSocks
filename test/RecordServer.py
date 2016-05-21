@@ -51,7 +51,7 @@ Download: {10}{0}\
         s_sec, s_usec,
         e_sec, e_usec,
         user,
-        ip, port,
+        socket.inet_ntoa(struct.pack("=I", ip)), port,
         host,
         upload, download)
     print outstr

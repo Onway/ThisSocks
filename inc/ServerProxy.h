@@ -8,7 +8,7 @@ class ServerProxy : public Proxy
 protected:
 	void Process(int srcfd);
     int ConnectRealServer(uint32_t ip, uint16_t port) const;
-	uint32_t GetIPv4ByName(std::string hostname) const;
+	uint32_t GetIPv4ByName(const std::string& hostname) const;
 	virtual void Process(int srcfd, const char *request, int len) const;
 
 private:
