@@ -126,6 +126,8 @@ ServerProxy* ServerProxy::SelectServerProxy(const char *request, int len) const
 
 uint32_t ServerProxy::GetIPv4ByName(string hostname) const
 {
+    Recorder::RecordHost(hostname);
+
 	struct addrinfo hints;
 	struct addrinfo* result;
 

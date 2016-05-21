@@ -21,7 +21,7 @@ def OutputMessage(message):
     offset = 0
 
     version, offset = BytesToNumber(SFMT, message, offset)
-    length, offset = BytesToNumber(SFMT, message, offset)
+
     s_sec, offset = BytesToNumber(IFMT, message, offset)
     s_usec, offset = BytesToNumber(IFMT, message, offset)
     e_sec, offset = BytesToNumber(IFMT, message, offset)
@@ -30,20 +30,29 @@ def OutputMessage(message):
     port, offset = BytesToNumber(IFMT, message, offset)
     upload, offset = BytesToNumber(IFMT, message, offset)
     download, offset = BytesToNumber(IFMT, message, offset)
-    user = message[offset : offset + length - 32].decode('ascii')
+
+    user_len, offset = BytesToNumber(SFMT, message, offset)
+    user = message[offset : offset + user_len].decode('ascii')
+    offset += user_len
+
+    host_len, offset = BytesToNumber(SFMT, message, offset)
+    host = message[offset : offset + host_len].decode('ascii')
+    offset += host_len
 
     outstr = "\
 STime: {1},{2}{0}\
 ETime: {3},{4}{0}\
 User: {5}{0}\
 Connect: {6},{7}{0}\
-Upload: {8}{0}\
-Download: {9}{0}\
+Host: {8}{0}\
+Upload: {9}{0}\
+Download: {10}{0}\
 ".format(os.linesep,
         s_sec, s_usec,
         e_sec, e_usec,
         user,
         ip, port,
+        host,
         upload, download)
     print outstr
 

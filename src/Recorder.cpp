@@ -83,6 +83,16 @@ void Recorder::RecordAddress(unsigned int ip, unsigned short port)
 	info->Port = port;
 }
 
+void Recorder::RecordHost(const std::string host)
+{
+    if (!IsNeedRecord()) {
+        return;
+    }
+
+    RecordInfo* info = GetRecordInfo();
+    info->Host = host;
+}
+
 void Recorder::RecordUpload(unsigned int size)
 {
 	if (!IsNeedRecord()) {
@@ -126,6 +136,7 @@ void RecordInfo::Print()
 			"\nSTime: %ld.%ld"
 			"\nETime: %ld.%ld"
 			"\nUser: %s"
+            "\nHost: %s"
 		   	"\nConnect: %u,%u"
 		    "\nUpload: %u"
 		   	"\nDonwload: %u"
@@ -157,7 +168,7 @@ size_t RecordInfo::ConvertToBytes(unsigned char* buf)
 	size_t offset = 0;
 
 	offset += UShortToBytes(buf + offset, htons(1)); // version
-	offset += UShortToBytes(buf + offset, htons(32 + User.size())); // length
+
 	offset += UIntToBytes(buf + offset, htonl(STime.tv_sec));
 	offset += UIntToBytes(buf + offset, htonl(STime.tv_usec));
 	offset += UIntToBytes(buf + offset, htonl(ETime.tv_sec));
@@ -166,8 +177,14 @@ size_t RecordInfo::ConvertToBytes(unsigned char* buf)
 	offset += UIntToBytes(buf + offset, htonl(Port));
 	offset += UIntToBytes(buf + offset, htonl(Upload));
 	offset += UIntToBytes(buf + offset, htonl(Download));
+
+    offset += UShortToBytes(buf + offset, htons(User.size()));
 	memcpy(buf + offset, User.data(), User.size());
 	offset += User.size();
+
+    offset += UShortToBytes(buf + offset, htons(Host.size()));
+    memcpy(buf + offset, Host.data(), Host.size());
+    offset += Host.size();
 
 	return offset;
 }
