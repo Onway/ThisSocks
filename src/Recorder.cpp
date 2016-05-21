@@ -62,7 +62,7 @@ bool Recorder::IsNeedRecord()
 	return !GConfig.RecordAddress.empty() && GConfig.RecordPort != 0;
 }
 
-void Recorder::RecordUser(std::string user)
+void Recorder::RecordUser(const std::string& user)
 {
 	if (!IsNeedRecord()) {
 		return;
