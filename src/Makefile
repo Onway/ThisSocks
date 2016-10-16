@@ -1,12 +1,8 @@
 INC_DIR = ../inc
-LIB_DIR = 
-
-STATIC_LIB = 
-DYNAMIC_LIB = pthread
 
 CPPFLAGS = 
 CXXFLAGS = -Wall $(INC_DIR:%=-I%)
-LDFLAGS = -Wl, -Bstatic $(STATIC_LIB:%=-l%) -Wl, -Bdynamic $(DYNAMIC_LIB:%=-l%)
+LDFLAGS = -lpthread
 
 TARGET = ThisSocks
 SOURCES = $(wildcard *.cpp)
@@ -21,15 +17,12 @@ endif
 USE_CRYPTOPP ?= 0
 ifeq ($(USE_CRYPTOPP), 1)
 	CPPFLAGS += -DUSE_CRYPTOPP
-	DYNAMIC_LIB += cryptopp
+	LDFLAGS += -lcryptopp
 endif
 
 .PHONY : all install uninstall clean
 
 all : $(TARGET)
-
-debug: CXXFLAGS += -g
-debug: $(TARGET)
 
 $(DEPENDS) : %.d : %.cpp
 	rm -f $@; \
@@ -46,6 +39,22 @@ $(TARGET) : $(DEPENDS) $(OBJECTS)
 ifneq ($(MAKECMDGOALS), clean)
 -include $(DEPENDS)
 endif
+
+OS = $(shell uname -s)
+install:
+	mkdir -p /etc/$(TARGET)
+	cp -f ../conf/* /etc/$(TARGET)
+	cp $(TARGET) /usr/local/bin
+	if test "$(OS)" != "Darwin"; then \
+		cp -f ../script/* /etc/init.d; \
+	fi;
+
+uninstall:
+	rm -f /usr/local/bin/$(TARGET)
+	rm -rf /etc/$(TARGET)
+	if test "$(OS)" != "Darwin"; then \
+		rm -rf /etc/init.d/$(TARGET)*; \
+	fi;
 
 clean:
 	rm -f $(TARGET) $(OBJECTS) $(DEPENDS)
