@@ -1,7 +1,7 @@
-#include "TcpServer.h"
-#include "Config.h"
-#include "Logger.h"
-#include "Passwd.h"
+#include "tcp_server.h"
+#include "config.h"
+#include "logger.h"
+#include "passwd.h"
 #include <string>
 #include <cstdlib>
 #include <cassert>

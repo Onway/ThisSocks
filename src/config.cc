@@ -1,5 +1,5 @@
-#include "Config.h"
-#include "Utils.h"
+#include "config.h"
+#include "utils.h"
 #include <iostream>
 #include <cstring>
 #include <cstdlib>

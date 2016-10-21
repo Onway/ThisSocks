@@ -1,6 +1,6 @@
-#include "TcpServer.h"
-#include "Logger.h"
-#include "Config.h"
+#include "tcp_server.h"
+#include "logger.h"
+#include "config.h"
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>

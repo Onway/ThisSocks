@@ -1,13 +1,13 @@
-#include "Proxy.h"
-#include "SocksProxy.h"
-#include "HttpsProxy.h"
-#include "HttpProxy.h"
-#include "ClientProxy.h"
-#include "Config.h"
-#include "Logger.h"
-#include "Utils.h"
-#include "Encrypt.h"
-#include "Recorder.h"
+#include "proxy.h"
+#include "socks_proxy.h"
+#include "https_proxy.h"
+#include "http_proxy.h"
+#include "client_proxy.h"
+#include "config.h"
+#include "logger.h"
+#include "utils.h"
+#include "encrypt.h"
+#include "recorder.h"
 
 using namespace std;
 

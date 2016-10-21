@@ -5,9 +5,9 @@ CXXFLAGS = -Wall $(INC_DIR:%=-I%)
 LDFLAGS = -lpthread
 
 TARGET = ThisSocks
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(SOURCES:%.cpp=%.o)
-DEPENDS = $(SOURCES:%.cpp=%.d)
+SOURCES = $(wildcard *.cc)
+OBJECTS = $(SOURCES:%.cc=%.o)
+DEPENDS = $(SOURCES:%.cc=%.d)
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
@@ -24,13 +24,13 @@ endif
 
 all : $(TARGET)
 
-$(DEPENDS) : %.d : %.cpp
+$(DEPENDS) : %.d : %.cc
 	rm -f $@; \
 	$(CXX) -MM $(CPPFLAGS) $(CXXFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
-$(OBJECTS) : %.o : %.cpp
+$(OBJECTS) : %.o : %.cc
 	$(CXX) -c $< -o $@ $(CPPFLAGS) $(CXXFLAGS)
 
 $(TARGET) : $(DEPENDS) $(OBJECTS)

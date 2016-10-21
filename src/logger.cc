@@ -1,5 +1,5 @@
-#include "Feature.h"
-#include "Logger.h"
+#include "feature.h"
+#include "logger.h"
 #include <ctime>
 #include <cstdarg>
 #include <cstring>

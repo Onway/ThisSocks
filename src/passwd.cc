@@ -1,7 +1,7 @@
-#include "Passwd.h"
-#include "Config.h"
-#include "Logger.h"
-#include "Utils.h"
+#include "passwd.h"
+#include "config.h"
+#include "logger.h"
+#include "utils.h"
 
 using namespace std;
 

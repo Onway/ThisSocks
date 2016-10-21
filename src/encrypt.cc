@@ -1,7 +1,7 @@
-#include "Encrypt.h"
-#include "Logger.h"
-#include "Config.h"
-#include "Passwd.h"
+#include "encrypt.h"
+#include "logger.h"
+#include "config.h"
+#include "passwd.h"
 #include <ctime>
 #include <cstdlib>
 #include <math.h>

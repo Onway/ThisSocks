@@ -3,7 +3,7 @@
 
 #include <string>
 #include <signal.h>
-#include "Proxy.h"
+#include "proxy.h"
 
 class TcpServer
 {

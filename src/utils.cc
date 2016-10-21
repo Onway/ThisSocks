@@ -1,5 +1,5 @@
-#include "Feature.h"
-#include "Utils.h"
+#include "feature.h"
+#include "utils.h"
 #include <iostream>
 #include <errno.h>
 #include <cstring>

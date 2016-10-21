@@ -1,6 +1,6 @@
-#include "Recorder.h"
-#include "Logger.h"
-#include "Config.h"
+#include "recorder.h"
+#include "logger.h"
+#include "config.h"
 #include <cstring>
 #include <cstdlib>
 

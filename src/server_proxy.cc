@@ -1,9 +1,9 @@
-#include "ServerProxy.h"
-#include "HttpProxy.h"
-#include "HttpsProxy.h"
-#include "SocksProxy.h"
-#include "Logger.h"
-#include "Recorder.h"
+#include "server_proxy.h"
+#include "http_proxy.h"
+#include "https_proxy.h"
+#include "socks_proxy.h"
+#include "logger.h"
+#include "recorder.h"
 
 using std::string;
 

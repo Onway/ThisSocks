@@ -1,9 +1,9 @@
-#ifndef HTTPPROXY_H
-#define HTTPPROXY_H
+#ifndef HTTPSPROXY_H
+#define HTTPSPROXY_H
 
-#include "ServerProxy.h"
+#include "server_proxy.h"
 
-class HttpServerProxy : public ServerProxy
+class HttpsServerProxy : public ServerProxy
 {
 public:
     static bool isMatch(const char *request, int len);
@@ -15,4 +15,4 @@ private:
     bool ParseIpPort(std::string &domain, uint32_t &ip, uint16_t &port) const;
 };
 
-#endif // HTTPPROXY_H
+#endif // HTTPSPROXY_H

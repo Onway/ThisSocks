@@ -1,7 +1,7 @@
 #ifndef SERVERPROXY_H
 #define SERVERPROXY_H
 
-#include "Proxy.h"
+#include "proxy.h"
 
 class ServerProxy : public Proxy
 {

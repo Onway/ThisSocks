@@ -1,7 +1,7 @@
 #ifndef SOCKSPROXY_H
 #define SOCKSPROXY_H
 
-#include "ServerProxy.h"
+#include "server_proxy.h"
 
 class SocksServerProxy : public ServerProxy
 {

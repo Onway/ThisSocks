@@ -1,7 +1,7 @@
 #ifndef PROXY_H
 #define PROXY_H
-#include "Passwd.h"
-#include "Encrypt.h"
+#include "passwd.h"
+#include "encrypt.h"
 #include <unistd.h>
 #include <math.h>
 #include <string>

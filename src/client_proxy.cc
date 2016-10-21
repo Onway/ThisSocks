@@ -1,6 +1,6 @@
-#include "ClientProxy.h"
-#include "Logger.h"
-#include "Config.h"
+#include "client_proxy.h"
+#include "logger.h"
+#include "config.h"
 
 void ClientProxy::Process(int srcfd)
 {

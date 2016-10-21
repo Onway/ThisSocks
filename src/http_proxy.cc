@@ -1,7 +1,7 @@
-#include "HttpProxy.h"
-#include "Logger.h"
-#include "Utils.h"
-#include "Recorder.h"
+#include "http_proxy.h"
+#include "logger.h"
+#include "utils.h"
+#include "recorder.h"
 
 using namespace std;
 
