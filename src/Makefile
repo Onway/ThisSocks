@@ -1,4 +1,4 @@
-INC_DIR = ../inc
+INC_DIR = 
 
 CPPFLAGS = 
 CXXFLAGS = -Wall $(INC_DIR:%=-I%)
