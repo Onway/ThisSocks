@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef THISSOCKS_UTILS_H_
+#define THISSOCKS_UTILS_H_
 
 #include <iostream>
 #include <vector>
@@ -18,4 +18,4 @@ public:
 
     static std::string GetSocketPair(int connfd);
 };
-#endif
+#endif  // THISSOCKS_UTILS_H_

@@ -1,16 +1,19 @@
-#include "feature.h"
 #include "utils.h"
-#include <iostream>
+
 #include <errno.h>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 #include <cstdlib>
-#include <syslog.h>
+#include <iostream>
+
+#include <arpa/inet.h>
 #include <limits.h>
+#include <syslog.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <arpa/inet.h>
+
+#include "feature.h"
 
 using namespace std;
 

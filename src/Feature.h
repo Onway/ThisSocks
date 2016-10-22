@@ -1,3 +1,6 @@
+#ifndef THISSOCKS_FEATURE_H_
+#define THISSOCKS_FEATURE_H_
+
 // for strerror_r
 #define _POSIX_C_SOURCE 200809L
 #ifdef _GNU_SOURCE
@@ -7,3 +10,5 @@
 // for realpath
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE_EXTENDED
+
+#endif  // THISSOCKS_FEATURE_H_ 
