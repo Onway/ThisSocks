@@ -1,9 +1,11 @@
 #include "utils.h"
 
 #include <errno.h>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <functional>
 #include <iostream>
 
 #include <arpa/inet.h>
@@ -17,54 +19,22 @@
 
 using namespace std;
 
-bool Utils::TrimStart(string &str)
+void Utils::TrimLeft(string& s)
 {
-	int s = 0;
-    int len = str.size();
-    for (; s < len; ++s) {
-		if (str[s] != ' ' && str[s] != '\t') {
-			break;
-		}
-	}
-
-	if (s == 0) {
-		return false;
-	}
-
-    if (s >= len) {
-		str = "";
-	} else {
-		str = str.substr(s);
-	}
-	return true;
+    s.erase(s.begin(), find_if_not(
+            s.begin(), s.end(), static_cast<int(*)(int)>(isspace)));
 }
 
-bool Utils::TrimEnd(string &str)
+void Utils::TrimRight(string& s)
 {
-	int e = str.size() - 1;
-	for (; e >= 0; --e) {
-		if (str[e] != ' ' && str[e] != '\t') {
-			break;
-		}
-	}
-
-    if (e == (int)str.size() - 1) {
-		return false;
-	}
-
-	if (e < 0) {
-		str = "";
-	} else {
-		str = str.substr(0, e + 1);
-	}
-	return true;
+    s.erase(find_if_not(s.rbegin(), s.rend(),
+            static_cast<int(*)(int)>(isspace)).base(), s.end());
 }
 
-bool Utils::Trim(string &str)
+void Utils::Trim(string &s)
 {
-	bool s = TrimStart(str);
-	bool e = TrimEnd(str);
-	return s || e;
+    TrimLeft(s);
+    TrimRight(s);
 }
 
 void Utils::Split(const string &str, char c, vector<string> &vec)

@@ -1,6 +1,6 @@
 INC_DIR = 
 
-CPPFLAGS = 
+CPPFLAGS = -std=c++11
 CXXFLAGS = -Wall $(INC_DIR:%=-I%)
 LDFLAGS = -lpthread
 

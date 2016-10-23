@@ -1,20 +1,22 @@
 #include "tcp_server.h"
-#include "logger.h"
-#include "config.h"
+
+#include <errno.h>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
-#include <errno.h>
+
+#include <arpa/inet.h>
 #include <signal.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
-#include <arpa/inet.h>
+#include <unistd.h>
 
-using namespace std;
+#include "config.h"
+#include "logger.h"
 
-void TcpServer::Run(string srvAddr, int port)
+
+void TcpServer::Run(std::string srvAddr, int port)
 {
 	int listenfd = CreateListenSocket(srvAddr, port);
 	if (listenfd < 0) {
@@ -37,7 +39,7 @@ void TcpServer::Run(string srvAddr, int port)
 	}
 }
 
-int TcpServer::CreateListenSocket(string srvAddr, int port)
+int TcpServer::CreateListenSocket(std::string srvAddr, int port)
 {
 	int listenfd;
 	struct sockaddr_in servaddr;

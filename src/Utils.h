@@ -7,9 +7,10 @@
 class Utils
 {
 public:
-	static bool TrimStart(std::string &str);
-	static bool TrimEnd(std::string &str);
-	static bool Trim(std::string &str);
+    static void TrimLeft(std::string& s);
+    static void TrimRight(std::string& s);
+	static void Trim(std::string &s);
+
 	static void Split(const std::string &str,
 			char c, std::vector<std::string> &vec);
 
