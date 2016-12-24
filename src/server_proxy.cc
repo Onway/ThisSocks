@@ -90,6 +90,8 @@ bool ServerProxy::ValidateProxyClient() const
 
 int ServerProxy::ConnectRealServer(uint32_t ip, uint16_t port) const
 {
+	Recorder::RecordAddress(ip, port);
+
     struct sockaddr_in remoteaddr;
     bzero(&remoteaddr, sizeof(remoteaddr));
     remoteaddr.sin_family = AF_INET;
@@ -108,7 +110,6 @@ int ServerProxy::ConnectRealServer(uint32_t ip, uint16_t port) const
         GLogger.LogErr(LOG_ERR, "connect() to real server error");
         return -1;
     }
-	Recorder::RecordAddress(ip, port);
 
     return remotefd;
 }
@@ -124,8 +125,10 @@ ServerProxy* ServerProxy::SelectServerProxy(const char *request, int len) const
 	return new HttpServerProxy();
 }
 
-uint32_t ServerProxy::GetIPv4ByName(string hostname) const
+uint32_t ServerProxy::GetIPv4ByName(const string& hostname) const
 {
+    Recorder::RecordHost(hostname);
+
 	struct addrinfo hints;
 	struct addrinfo* result;
 

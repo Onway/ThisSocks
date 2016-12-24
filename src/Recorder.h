@@ -12,6 +12,7 @@ class RecordInfo
 {
 public:
 	std::string User;
+    std::string Host;
 	struct timeval STime;
 	struct timeval ETime;
 	unsigned int IP;
@@ -33,7 +34,8 @@ class Recorder
 {
 public:
 	static void CreateKey();
-	static void RecordUser(std::string user);
+	static void RecordUser(const std::string& user);
+    static void RecordHost(const std::string host);
 	static void RecordAddress(unsigned int ip, unsigned short port);
 	static void RecordUpload(unsigned int size);
 	static void RecordDownload(unsigned int size);
