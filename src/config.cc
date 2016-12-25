@@ -80,6 +80,7 @@ bool Config::LoadFromFile()
 			continue;
 		}
 
+        vec.clear();
 		Utils::Split(line, '=', vec);
 		if (vec.size() != 2) {
 			cerr << "unknown config line: " << line << endl;

@@ -25,6 +25,7 @@ void Passwd::LoadFile(string fPath)
 			continue;
 		}
 
+        vec.clear();
 		Utils::Split(line, ':', vec);
 		if (vec.size() != 2) {
 			GLogger.LogMsg(LOG_WARNING,

@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <functional>
 #include <iostream>
+#include <sstream>
 
 #include <arpa/inet.h>
 #include <limits.h>
@@ -37,21 +38,13 @@ void Utils::Trim(string &s)
     TrimRight(s);
 }
 
-void Utils::Split(const string &str, char c, vector<string> &vec)
+void Utils::Split(const string& str, char c, vector<string>& vec)
 {
-	vec.clear();
-
-	string::size_type s = 0, e = 0;
-	for (; e < str.size(); ++e) {
-		if (str[e] == c) {
-			vec.push_back(str.substr(s, e - s));
-			s = e + 1;
-		}
-	}
-
-	if (e != 0 && s <= e) {
-		vec.push_back(str.substr(s, e - s));
-	}
+    stringstream ss(str);
+    string item;
+    while (getline(ss, item, c)) {
+        vec.push_back(item);
+    }
 }
 
 string Utils::GetSocketPair(int connfd)

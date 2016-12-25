@@ -11,8 +11,8 @@ public:
     static void TrimRight(std::string& s);
 	static void Trim(std::string &s);
 
-	static void Split(const std::string &str,
-			char c, std::vector<std::string> &vec);
+	static void Split(const std::string& str,
+			char c, std::vector<std::string>& vec);
 
 	static std::string GetAbsDir(std::string filePath);
 	static std::string JoinPath(std::string dir, std::string path);
