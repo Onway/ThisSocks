@@ -32,7 +32,7 @@ void Utils::TrimRight(string& s)
             static_cast<int(*)(int)>(isspace)).base(), s.end());
 }
 
-void Utils::Trim(string &s)
+void Utils::Trim(string& s)
 {
     TrimLeft(s);
     TrimRight(s);
@@ -76,12 +76,34 @@ string Utils::GetSocketPair(int connfd)
     return string(buf);
 }
 
+string Utils::GetAbsolutePath(const string& path)
+{
+	char rpath[4096];
+    return realpath(path.c_str(), rpath) == NULL ? "" : rpath;
+}
+
+string Utils::GetDirectoryName(const string& path)
+{
+   string::size_type pos = path.find_last_of('/');
+   if (pos == string::npos) {
+        return "";
+   } else if (pos == 0) {
+        return "/";
+   }
+
+   pos = path.find_last_not_of('/', pos);
+   if (pos == string::npos) {
+        return "/";
+   }
+   return path.substr(0, pos + 1);
+}
+
 /*
  * 返回指定路径所在目录的绝对路径
  * 如果传入的是非根目录，截掉最后的'/'返回
  * 参数无效返回空串
  */
-string Utils::GetAbsDir(string path)
+string Utils::GetAbsDir(const string& path)
 {
 	char rpath[4096];
 	if (realpath(path.c_str(), rpath) == NULL) {
@@ -94,11 +116,8 @@ string Utils::GetAbsDir(string path)
 		return "";
 	}
 
-	if (S_ISDIR(sbuf.st_mode)) {
-		return strpath.size() == 1 ? strpath : strpath + "/";
-	}
-	string::size_type lastpos = strpath.find_last_of('/');
-	return strpath.substr(0, lastpos + 1);
+    return S_ISDIR(sbuf.st_mode) ? strpath :
+        strpath.substr(0, strpath.find_last_of('/'));
 }
 
 /*
@@ -107,31 +126,15 @@ string Utils::GetAbsDir(string path)
  * 如果path是绝对路径则返回path
  * 参数无效返回空串
  */
-string Utils::JoinPath(string dir, string path)
+string Utils::JoinPath(const string& dir, const string& path)
 {
-	if (path.empty()) {
-		return "";
-	}
-	if (path[0] == '/' && path.size() == 1) {
-		return path;
-	} 
-	if (path[0] == '/') {
-		return path[path.size() - 1] == '/' ?
-			path.substr(0, path.size() - 1) : path;
-	}
+    if (!path.empty() && *path.begin() == '/') {
+        return path;
+    }
 
-	string ret;
-	if (dir.empty() || dir[0] != '/') {
-		return "";
-	}
-	if (dir.size() == 1) {
-		ret = dir + path;
-	} else if (dir[dir.size() - 1] == '/') {
-		ret = dir + path;
-	} else {
-		ret = dir + "/" + path;
-	}
-
-	return ret[ret.size() - 1] == '/' ?
-		ret.substr(0, ret.size() - 1) : ret;
+    if (dir.empty()) {
+        return path;
+    } else {
+        return *dir.rbegin() == '/' ? dir + path : dir + "/" + path;
+    }
 }
