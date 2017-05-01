@@ -170,7 +170,7 @@ bool Config::CheckOptions() const
 
 void Config::PrintUsage() const
 {
-	cout << "ThisSocks v2.5.1" << endl;
+	cout << "ThisSocks v2.6.0" << endl;
 	cout << endl;
 	cout << "Usage: ThisSocks [-D] <-C FILE>" << endl;
 	cout << "       ThisSocks -h" << endl;

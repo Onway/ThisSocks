@@ -10,20 +10,18 @@
 
 ## 编译
     git clone https://github.com/Onway/ThisSocks.git
-	cd ThisSocks
-	mkdir build
-	cd build
-	cmake ..
+	cd ThisSocks/src
 	make
 
 ## 运行
     # 服务端侦听127.0.0.1:8389
-	./ThisSocks -D -C conf/server.conf
+	./ThisSocks -D -C ../conf/server.conf
 
 	# 客户端侦听127.0.0.1:1081
-	./ThisSocks -D -C conf/client.conf
+	./ThisSocks -D -C ../conf/client.conf
 
 	# 运行使用了curl的测试脚本
+    cd ../test
 	./curl.bash
 
 ## 安装
@@ -38,11 +36,8 @@
 	service ThisSocks_S stop
 
 ## 卸载
-	# 在build目录执行
-	cat install_manifest.txt | sudo xargs rm
-
-	# 有什么办法可以不用执行这句？
-	sudo rm -rf /etc/ThisSocks
+	# 在src目录执行
+    sudo make uninstall
 
 ## 开机启动
 	# 安装后执行
