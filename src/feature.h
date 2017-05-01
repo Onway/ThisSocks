@@ -8,7 +8,12 @@
 #endif
 
 // for realpath
+#ifndef _BSD_SOURCE
 #define _BSD_SOURCE
+#endif
+
+#ifndef _XOPEN_SOURCE_EXTENDED
 #define _XOPEN_SOURCE_EXTENDED
+#endif
 
 #endif  // THISSOCKS_FEATURE_H_ 
